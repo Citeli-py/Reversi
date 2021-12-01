@@ -6,6 +6,37 @@ typedef struct
     int linha, coluna;
 } coordenada;
 
+
+int ValidaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
+{
+    int linha = jogada.linha;
+    int coluna = jogada.coluna;
+
+    if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna=0))
+        return -1;
+
+
+    for(int i = 0; i<8; i++)
+        {
+            for(int j = 0; j<8; j++)
+                {
+                 
+                 return 0;
+                  
+
+
+
+
+                }
+        
+        }
+
+
+
+}
+
+
+
 void ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 {
     /*Se a jogada for válida, a função deve modificar o
@@ -36,6 +67,7 @@ coordenada EscolheJogada()
 {
     coordenada jogada;
     scanf("%d %d", &jogada.linha, &jogada.coluna);
+    jogada.linha--; jogada.coluna--;
     return jogada;
 }
 
@@ -64,6 +96,7 @@ void DesenhaTabuleiro(int tabuleiro[8][8])
         printf("|");
     }
     printf("\n +------------------------+");
+    printf("\n");
     return 0;
 }
 
@@ -93,7 +126,10 @@ int main()
     //matriz_teste(&tabuleiro[0][0]);
     IniciaTabuleiro(&tabuleiro);
     DesenhaTabuleiro(tabuleiro);
-    //jogada = EscolheJogada();
+    jogada = EscolheJogada();
     //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
+    printf("%d",ValidaJogada(tabuleiro, 1, jogada));
+    
     return 0;
+
 }
