@@ -3,8 +3,22 @@
 
 typedef struct
 {
-    int linha, coluna;
+    int linha;
+    int coluna;
 } coordenada;
+
+void printa(int *ptr) //Função de debbug
+{
+    //notas *(ptr + linha*n_linhas + coluna) == matriz[linha][coluna];
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+            printf("%d ", *(ptr + i*8 + j));
+
+        printf("\n");
+    }
+}
+
 
 void DesenhaTabuleiro(int tabuleiro[8][8])
 {
@@ -38,8 +52,6 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 {
     int linha = jogada.linha;
     int coluna = jogada.coluna;
-    int subc = 8 - coluna;
-    int subl = 8 - linha;
     int contador = 1;
     int contadores[4] = {0, 0, 0, 0};
 
@@ -47,7 +59,8 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
         return -1;
 
     tabuleiro[linha][coluna] = jogador;
-    DesenhaTabuleiro(tabuleiro);
+    printf("\n--%d--\n", tabuleiro[7][7]);
+    printa(&tabuleiro[0][0]);
 
     //horizontal
     for(int i = 0; i<8; i++)
@@ -106,23 +119,12 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
   //  return 0;
 //}
 
-void printa(int *ptr) //Função de debbug
-{
-    //notas *(ptr + linha*n_linhas + coluna) == matriz[linha][coluna];
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-            printf("%d ", *(ptr + i*8 + j));
-
-        printf("\n");
-    }
-}
-
 coordenada EscolheJogada()
 {
     coordenada jogada;
-    scanf("%d %d", &jogada.linha, &jogada.coluna);
-    jogada.linha--; jogada.coluna--;
+    scanf("%d", &jogada.linha);
+    scanf("%d", &jogada.coluna);
+    jogada.linha-=1; jogada.coluna-=1;
     return jogada;
 }
 
