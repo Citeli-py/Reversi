@@ -7,38 +7,62 @@ typedef struct
 } coordenada;
 
 
-int ValidaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
+int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 {
     int linha = jogada.linha;
     int coluna = jogada.coluna;
+    int subc = 8 - coluna;
+    int subl = 8 - linha;
+    int contador = 1;
+    int contadores[4] = {0, 0, 0, 0};
 
     if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna=0))
         return -1;
 
-
+    //horizontal
     for(int i = 0; i<8; i++)
-        {
-            for(int j = 0; j<8; j++)
-                {
-                 
-                 return 0;
-                  
+    {
+        if(tabuleiro[linha][i] == jogador)
+            contador++;
+        if(contador >= 2)
+            return 1;
+
+        printf("%d\n", contador);
+    }
+
+
+    //vertical
+    for(int i = 0; i<8;i++)
+    {
+        if(tabuleiro[i][coluna] == jogador)
+            contador++;
+        if(contador >= 2)
+            return 1;
+  
+    }
+
+    //diagonal
+   /* for(int i = 0, a = 7; i<8, a>-1; i++, a--)
+    {
+        //Direita-Baixo
+        if(tabuleiro[i+l][i+l] == tabuleiro[i+1+l][i+1+l])
+            contadores[0]++;
+        if(tabuleiro[a][a] == tabuleiro[i-1][i-1])
+            contadores[1]++;
 
 
 
-
-                }
-        
-        }
-
-
-
+  
+  
+    }
+*/
+    return 2;
 }
 
 
 
-void ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
-{
+//void ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
+//{
     /*Se a jogada for válida, a função deve modificar o
       tabuleiro de acordo com as regras e retornar 1; caso contrário, deve manter o tabuleiro como está e
       retornar 0.*/
@@ -48,8 +72,8 @@ void ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
       Considere, nessa primeira versão do trabalho, que sempre existirá pelo menos uma jogada valida.
       Se a função ExecutaJogada() retornar 1, o programa deve mudar o jogador da vez.*/
 
-    return 0;
-}
+  //  return 0;
+//}
 
 void printa(int *ptr) //Função de debbug
 {
@@ -128,7 +152,7 @@ int main()
     DesenhaTabuleiro(tabuleiro);
     jogada = EscolheJogada();
     //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
-    printf("%d",ValidaJogada(tabuleiro, 1, jogada));
+    printf("%d",ExecutaJogada(tabuleiro, 1, jogada));
     
     return 0;
 
