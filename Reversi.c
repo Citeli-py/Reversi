@@ -6,6 +6,33 @@ typedef struct
     int linha, coluna;
 } coordenada;
 
+void DesenhaTabuleiro(int tabuleiro[8][8])
+{
+    printf("  ");
+    for (int i = 0; i < 8; i++) // Cria os numeros acima
+    {
+        printf(" %d ",i+1);
+    }
+    
+    printf("\n +------------------------+");
+    for(int i=0; i<8; i++)
+    { 
+        printf("\n%d|",i+1);
+        for(int j=0;j<8;j++) // Define as peças do tabuleiro
+        {
+            if(tabuleiro[i][j] == -1)
+                printf(" B ");
+            if(tabuleiro[i][j] == 1)
+                printf(" W ");
+            if(tabuleiro[i][j] == 0)
+                printf(" - ");
+        }
+        printf("|");
+    }
+    printf("\n +------------------------+");
+    printf("\n");
+    return 0;
+}
 
 int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 {
@@ -18,6 +45,9 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 
     if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna=0))
         return -1;
+
+    tabuleiro[linha][coluna] = jogador;
+    DesenhaTabuleiro(tabuleiro);
 
     //horizontal
     for(int i = 0; i<8; i++)
@@ -56,6 +86,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
   
     }
 */
+
     return 2;
 }
 
@@ -96,33 +127,6 @@ coordenada EscolheJogada()
 }
 
 
-void DesenhaTabuleiro(int tabuleiro[8][8])
-{
-    printf("  ");
-    for (int i = 0; i < 8; i++) // Cria os numeros acima
-    {
-        printf(" %d ",i+1);
-    }
-    
-    printf("\n +------------------------+");
-    for(int i=0; i<8; i++)
-    { 
-        printf("\n%d|",i+1);
-        for(int j=0;j<8;j++) // Define as peças do tabuleiro
-        {
-            if(tabuleiro[i][j] == -1)
-                printf(" B ");
-            if(tabuleiro[i][j] == 1)
-                printf(" W ");
-            if(tabuleiro[i][j] == 0)
-                printf(" - ");
-        }
-        printf("|");
-    }
-    printf("\n +------------------------+");
-    printf("\n");
-    return 0;
-}
 
 void IniciaTabuleiro(int *ptr)
 {
@@ -153,7 +157,7 @@ int main()
     jogada = EscolheJogada();
     //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
     printf("%d",ExecutaJogada(tabuleiro, 1, jogada));
-    
+    DesenhaTabuleiro(tabuleiro);
     return 0;
 
 }
