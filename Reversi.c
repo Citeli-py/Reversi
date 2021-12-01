@@ -20,7 +20,7 @@ void ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
     return 0;
 }
 
-void printa(int *ptr)
+void printa(int *ptr) //Função de debugg
 {
     //notas *(ptr + linha*n_linhas + coluna) == matriz[linha][coluna];
     for (int i = 0; i < 8; i++)
