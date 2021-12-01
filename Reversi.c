@@ -55,7 +55,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
     int contador = 1;
     int contadores[4] = {0, 0, 0, 0};
 
-    if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna=0))
+    if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna==0))
         return -1;
 
     tabuleiro[linha][coluna] = jogador;
