@@ -50,17 +50,26 @@ void DesenhaTabuleiro(int tabuleiro[8][8])
 
 int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 {
+
+    /*Se a jogada for válida, a função deve modificar o
+      tabuleiro de acordo com as regras e retornar 1; caso contrário, deve manter o tabuleiro como está e
+      retornar 0.*/
+
+    /*Se a função ExecutaJogada() retornar 0, o programa deve indicar que a jogada é inválida e solicitar
+      uma nova jogada. Isso deve acontecer até que o jogador da vez informe uma jogada válida.
+      Considere, nessa primeira versão do trabalho, que sempre existirá pelo menos uma jogada valida.
+      Se a função ExecutaJogada() retornar 1, o programa deve mudar o jogador da vez.*/
+
     int linha = jogada.linha;
     int coluna = jogada.coluna;
     int contador = 1;
     int contadores[4] = {0, 0, 0, 0};
 
-    if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna==0))
+    if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna<0)) //Peça em cima da outra ou fora do tabuleiro
         return -1;
+    //Pelo menos uma peça diferente tem q estar do lado da peça a ser colocada
 
     tabuleiro[linha][coluna] = jogador;
-    printf("\n--%d--\n", tabuleiro[7][7]);
-    printa(&tabuleiro[0][0]);
 
     //horizontal
     for(int i = 0; i<8; i++)
@@ -92,11 +101,6 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
             contadores[0]++;
         if(tabuleiro[a][a] == tabuleiro[i-1][i-1])
             contadores[1]++;
-
-
-
-  
-  
     }
 */
 
@@ -104,27 +108,12 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 }
 
 
-
-//void ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
-//{
-    /*Se a jogada for válida, a função deve modificar o
-      tabuleiro de acordo com as regras e retornar 1; caso contrário, deve manter o tabuleiro como está e
-      retornar 0.*/
-
-    /*Se a função ExecutaJogada() retornar 0, o programa deve indicar que a jogada é inválida e solicitar
-      uma nova jogada. Isso deve acontecer até que o jogador da vez informe uma jogada válida.
-      Considere, nessa primeira versão do trabalho, que sempre existirá pelo menos uma jogada valida.
-      Se a função ExecutaJogada() retornar 1, o programa deve mudar o jogador da vez.*/
-
-  //  return 0;
-//}
-
 coordenada EscolheJogada()
 {
     coordenada jogada;
     scanf("%d", &jogada.linha);
     scanf("%d", &jogada.coluna);
-    jogada.linha-=1; jogada.coluna-=1;
+    jogada.linha--; jogada.coluna--;
     return jogada;
 }
 
