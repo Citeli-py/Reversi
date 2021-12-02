@@ -82,12 +82,14 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 
     tabuleiro[linha][coluna] = jogador;
 
+    //Contadores[0] são as peças iguais a do jogador
+    //contadores[1] são para as peças diferentes
     //horizontal
     for(int i = 0; i<8; i++)
     {
         if(tabuleiro[linha][i] == jogador)
             contadores[0]++;
-        if(contadores[0] >= 2)
+        if(contadores[0] >= 2 && tabuleiro[linha][i-1] == -1*jogador)
             return 1;
     }
 
@@ -98,7 +100,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
     {
         if(tabuleiro[i][coluna] == jogador)
             contadores[0]++;
-        if(contadores[0] >= 2)
+        if(contadores[0] >= 2 && tabuleiro[i-1][coluna] == -1*jogador)
             return 1;
     }
 
@@ -151,30 +153,43 @@ int main()
 
     coordenada jogada;
     int tabuleiro[8][8];
+    int jogador = 1;
     //tabuleiro
     //matriz_teste(&tabuleiro[0][0]);
     IniciaTabuleiro(&tabuleiro);
-    DesenhaTabuleiro(tabuleiro);
-    jogada = EscolheJogada();
-    //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
-    int res = ExecutaJogada(tabuleiro, 1, jogada);
 
-    switch (res)
+    while (1)
     {
-    case -1:
-        printf("\nJogada invalida!\n");
-        break;
+        DesenhaTabuleiro(tabuleiro);
+        jogada = EscolheJogada();
+        //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
+        int res = ExecutaJogada(tabuleiro, jogador, jogada);
 
-    case 1:
-        printf("\nJogada valida!\n");
-        break;
-    
-    default:
-        printf("\nErro ou diagonal\n");
-        break;
+        if(res == 1)
+        {
+            if(jogador == 1)
+                jogador = -1;
+            else
+                jogador = 1;
+        }
+
+        switch (res)
+        {
+        case -1:
+            printf("\nJogada invalida!\n");
+            break;
+
+        case 1:
+            printf("\nJogada valida!\n");
+            break;
+        
+        default:
+            printf("\nErro ou diagonal\n");
+            break;
+        }
+        //printf("%d\n",res);
+        //DesenhaTabuleiro(tabuleiro);
     }
-    printf("%d\n",res);
-    DesenhaTabuleiro(tabuleiro);
     return 0;
 
 }
