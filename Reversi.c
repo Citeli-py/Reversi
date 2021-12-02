@@ -20,6 +20,8 @@ void printa(int *ptr) //Função de debbug
 }
 
 
+
+
 void DesenhaTabuleiro(int tabuleiro[8][8])
 {
     printf("  ");
@@ -66,6 +68,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 
     if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna<0)) //Peça em cima da outra ou fora do tabuleiro
         return -1;
+
     //Pelo menos uma peça diferente tem q estar do lado da peça a ser colocada
     for(int i=linha-1;i<=linha+1; i++)
     {
@@ -85,24 +88,34 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
     //Contadores[0] são as peças iguais a do jogador
     //contadores[1] são para as peças diferentes
     //horizontal
-    for(int i = 0; i<8; i++)
+    if(jogador != tabuleiro[linha][coluna+1] && jogador != tabuleiro[linha][coluna-1])
     {
-        if(tabuleiro[linha][i] == jogador)
-            contadores[0]++;
-        if(contadores[0] >= 2 && tabuleiro[linha][i-1] == -1*jogador)
-            return 1;
+        for(int i = 0; i<8; i++)
+        {
+            if(tabuleiro[linha][i] == jogador)
+                contadores[0]++;
+            if(contadores[0] >= 2 && tabuleiro[linha][i-1] == -1*jogador)
+                return 1;
+        }
     }
+    //else
+    //    return -1;
 
     contadores[0] = 0;
 
     //vertical
-    for(int i = 0; i<8;i++)
+    if(jogador != tabuleiro[linha+1][coluna] && jogador != tabuleiro[linha-1][coluna])
     {
-        if(tabuleiro[i][coluna] == jogador)
-            contadores[0]++;
-        if(contadores[0] >= 2 && tabuleiro[i-1][coluna] == -1*jogador)
-            return 1;
+        for(int i = 0; i<8;i++)
+        {
+            if(tabuleiro[i][coluna] == jogador)
+                contadores[0]++;
+            if(contadores[0] >= 2)
+                return 1;
+        }
     }
+    //else
+    //    return -1;
 
     //diagonal
    /* for(int i = 0, a = 7; i<8, a>-1; i++, a--)
@@ -114,7 +127,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
             contadores[1]++;
     }
 */
-
+    tabuleiro[linha][coluna] = 0;
     return 2;
 }
 
@@ -153,7 +166,7 @@ int main()
 
     coordenada jogada;
     int tabuleiro[8][8];
-    int jogador = 1;
+    int jogador = -1;
     //tabuleiro
     //matriz_teste(&tabuleiro[0][0]);
     IniciaTabuleiro(&tabuleiro);
