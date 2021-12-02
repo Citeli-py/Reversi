@@ -120,6 +120,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 coordenada EscolheJogada()
 {
     coordenada jogada;
+    printf("Digite as coordenadas da jogada: ");
     scanf("%d", &jogada.linha);
     scanf("%d", &jogada.coluna);
     jogada.linha--; jogada.coluna--;
@@ -156,7 +157,23 @@ int main()
     DesenhaTabuleiro(tabuleiro);
     jogada = EscolheJogada();
     //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
-    printf("%d\n",ExecutaJogada(tabuleiro, 1, jogada));
+    int res = ExecutaJogada(tabuleiro, 1, jogada);
+
+    switch (res)
+    {
+    case -1:
+        printf("\nJogada invalida!\n");
+        break;
+
+    case 1:
+        printf("\nJogada valida!\n");
+        break;
+    
+    default:
+        printf("\nErro ou diagonal\n");
+        break;
+    }
+    printf("%d\n",res);
     DesenhaTabuleiro(tabuleiro);
     return 0;
 
