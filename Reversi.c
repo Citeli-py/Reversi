@@ -145,19 +145,17 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
         }
     }
 
-    /*
-    if(jogador != tabuleiro[linha+1][coluna+1] && jogador != tabuleiro[linha+1][coluna-1])
+    if(jogador != tabuleiro[linha+1][coluna+1] && jogador != tabuleiro[linha+1][coluna-1] && jogador != tabuleiro[linha-1][coluna+1] && jogador != tabuleiro[linha-1][coluna-1])
     {
         for(int i = 0, a = 7; i<8, a>-1; i++, a--)
         {
             //Direita-Baixo
-            if(tabuleiro[i+l][i+l] == tabuleiro[i+1+l][i+1+l])
+            if(tabuleiro[i+linha][i+linha] == tabuleiro[i+1+linha][i+1+linha])
                 contadores[0]++;
             if(tabuleiro[a][a] == tabuleiro[i-1][i-1])
                 contadores[1]++;
         }
     }
-    */
 
     if(conta_s>0)
         return 1;
