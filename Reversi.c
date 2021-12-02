@@ -62,12 +62,23 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 
     int linha = jogada.linha;
     int coluna = jogada.coluna;
-    int contador = 1;
     int contadores[4] = {0, 0, 0, 0};
 
     if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna<0)) //Peça em cima da outra ou fora do tabuleiro
         return -1;
     //Pelo menos uma peça diferente tem q estar do lado da peça a ser colocada
+    for(int i=linha-1;i<=linha+1; i++)
+    {
+        for(int j=coluna-1;j<=coluna+1; j++)
+            if(i>= 0 && j>=0)
+                if(tabuleiro[i][j] == -1*jogador)
+                    contadores[0]++;
+    }
+
+    if(contadores[0] <= 0)
+        return -1;
+
+    contadores[0] = 0;
 
     tabuleiro[linha][coluna] = jogador;
 
@@ -75,22 +86,20 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
     for(int i = 0; i<8; i++)
     {
         if(tabuleiro[linha][i] == jogador)
-            contador++;
-        if(contador >= 2)
+            contadores[0]++;
+        if(contadores[0] >= 2)
             return 1;
-
-        printf("%d\n", contador);
     }
 
+    contadores[0] = 0;
 
     //vertical
     for(int i = 0; i<8;i++)
     {
         if(tabuleiro[i][coluna] == jogador)
-            contador++;
-        if(contador >= 2)
+            contadores[0]++;
+        if(contadores[0] >= 2)
             return 1;
-  
     }
 
     //diagonal
@@ -147,7 +156,7 @@ int main()
     DesenhaTabuleiro(tabuleiro);
     jogada = EscolheJogada();
     //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
-    printf("%d",ExecutaJogada(tabuleiro, 1, jogada));
+    printf("%d\n",ExecutaJogada(tabuleiro, 1, jogada));
     DesenhaTabuleiro(tabuleiro);
     return 0;
 
