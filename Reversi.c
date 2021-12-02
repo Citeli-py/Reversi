@@ -19,7 +19,7 @@ void printa(int *ptr) //Função de debbug
     }
 }
 
-int vira(int tabuleiro[8][8], int eixo, int start, int jogador)
+void vira(int tabuleiro[8][8], int eixo, int start, int jogador)
 {
     int contador = 0;
     switch (eixo)
@@ -27,20 +27,26 @@ int vira(int tabuleiro[8][8], int eixo, int start, int jogador)
         case 0:
             for(int i = 0; i<8; i++)
             {
-                if(tabuleiro[start][i] == jogador)
-                    for(int j=i+1; j<8; j++)
-                    {
+                if(contador == 1)
+                    tabuleiro[start][i] = jogador;
 
-                        if(tabuleiro[start][j] == jogador)
-                            break;
-                        else
-                            tabuleiro[start][j] == jogador;
-                    }
+                if(tabuleiro[start][i] == jogador)
+                    contador ++;
+            }
+            break;
+        
+        case 1:
+            for(int i = 0; i<8; i++)
+            {
+                if(contador == 1)
+                    tabuleiro[i][start] = jogador;
+                    
+                if(tabuleiro[i][start] == jogador)
+                    contador ++;
             }
             break;
     }
 
-    return 0;
 }
 
 void DesenhaTabuleiro(int tabuleiro[8][8])
@@ -132,20 +138,27 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
             if(tabuleiro[i][coluna] == jogador)
                 contadores[0]++;
             if(contadores[0] >= 2)
+            {
+                vira(tabuleiro, 1, coluna, jogador);
                 conta_s ++;
+            }
         }
     }
 
-    //diagonal
-   /* for(int i = 0, a = 7; i<8, a>-1; i++, a--)
+    /*
+    if(jogador != tabuleiro[linha+1][coluna+1] && jogador != tabuleiro[linha+1][coluna-1])
     {
-        //Direita-Baixo
-        if(tabuleiro[i+l][i+l] == tabuleiro[i+1+l][i+1+l])
-            contadores[0]++;
-        if(tabuleiro[a][a] == tabuleiro[i-1][i-1])
-            contadores[1]++;
+        for(int i = 0, a = 7; i<8, a>-1; i++, a--)
+        {
+            //Direita-Baixo
+            if(tabuleiro[i+l][i+l] == tabuleiro[i+1+l][i+1+l])
+                contadores[0]++;
+            if(tabuleiro[a][a] == tabuleiro[i-1][i-1])
+                contadores[1]++;
+        }
     }
-*/
+    */
+
     if(conta_s>0)
         return 1;
     else
@@ -185,11 +198,12 @@ void IniciaTabuleiro(int *ptr)
     //notas *(ptr + linha*n_linhas + coluna) == matriz[linha][coluna];
 }
 
+int tabuleiro[8][8];
+
 int main()
 {
 
     coordenada jogada;
-    int tabuleiro[8][8];
     int jogador = -1;
     int jogadas = 1;
     IniciaTabuleiro(&tabuleiro);
