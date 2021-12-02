@@ -7,30 +7,24 @@ typedef struct
     int coluna;
 } coordenada;
 
-void printa(int *ptr) //Função de debbug
+void jogada_random(int *ptr) //Função de debbug
 {
-    //notas *(ptr + linha*n_linhas + coluna) == matriz[linha][coluna];
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-            printf("%d ", *(ptr + i*8 + j));
-
-        printf("\n");
-    }
+    return 0;
 }
 
-void vira(int tabuleiro[8][8], int eixo, int start, int jogador)
+void vira(int tabuleiro[8][8], int eixo, int linha, int coluna, int conta, int jogador)
 {
     int contador = 0;
+    int contadores[4] = {0, 0, 0, 0};
     switch (eixo)
     {
         case 0:
             for(int i = 0; i<8; i++)
             {
                 if(contador == 1)
-                    tabuleiro[start][i] = jogador;
+                    tabuleiro[linha][i] = jogador;
 
-                if(tabuleiro[start][i] == jogador)
+                if(tabuleiro[linha][i] == jogador)
                     contador ++;
             }
             break;
@@ -39,10 +33,52 @@ void vira(int tabuleiro[8][8], int eixo, int start, int jogador)
             for(int i = 0; i<8; i++)
             {
                 if(contador == 1)
-                    tabuleiro[i][start] = jogador;
+                    tabuleiro[i][coluna] = jogador;
                     
-                if(tabuleiro[i][start] == jogador)
+                if(tabuleiro[i][coluna] == jogador)
                     contador ++;
+            }
+            break;
+
+        case 2: 
+            for(int i=0; i<8; i++)
+            {
+                if(linha+i<8 && coluna+i<8 && conta==0) // Direita-baixo
+                {
+                    if(contador == 1)
+                        tabuleiro[linha+i][coluna+i] = jogador;
+
+                    if(tabuleiro[linha+i][coluna+i] == jogador)
+                        contador ++;
+                }
+
+                if( linha-i>=0 && coluna-i>=0 && conta==1) // Esquerda-Cima
+                {
+                    if(contador == 1)
+                        tabuleiro[linha-i][coluna-i] = jogador;
+
+                    if(tabuleiro[linha-i][coluna-i] == jogador)
+                        contador ++;
+                }
+
+                if( linha+i<8 && coluna-i>=0 && conta==2) // Direita-cima
+                {
+                    if(contador == 1)
+                        tabuleiro[linha+i][coluna-i] = jogador;
+
+                    if(tabuleiro[linha+i][coluna-i] == jogador)
+                        contador ++;
+                }
+
+                if(linha-i>=0 && coluna+i<8 && conta==3) // Esquerda-baixo
+                {
+                    if(contador == 1)
+                        tabuleiro[linha-i][coluna+i] = jogador;
+
+                    if(tabuleiro[linha-i][coluna+i] == jogador)
+                        contador ++;
+                }
+
             }
             break;
     }
@@ -122,7 +158,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
                 contadores[0]++;
             if(contadores[0] >= 2 && tabuleiro[linha][i-1] == -1*jogador)
             {
-                vira(tabuleiro, 0, linha, jogador);
+                vira(tabuleiro, 0, linha, coluna, 0, jogador);
                 conta_s ++;
             }
         }
@@ -139,21 +175,44 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
                 contadores[0]++;
             if(contadores[0] >= 2)
             {
-                vira(tabuleiro, 1, coluna, jogador);
+                vira(tabuleiro, 1, linha, coluna, 0, jogador);
                 conta_s ++;
             }
         }
     }
+    contadores[0] = 0;
 
     if(jogador != tabuleiro[linha+1][coluna+1] && jogador != tabuleiro[linha+1][coluna-1] && jogador != tabuleiro[linha-1][coluna+1] && jogador != tabuleiro[linha-1][coluna-1])
     {
-        for(int i = 0, a = 7; i<8, a>-1; i++, a--)
+
+        /*
+        (-1,-1) Esquerda-Cima
+        (+1,+1) Direita-baixo
+        (-1,+1) Esquerda-baixo
+        (+1,-1) Direita-cima
+        */
+        for(int i=0; i<8; i++)
         {
-            //Direita-Baixo
-            if(tabuleiro[i+linha][i+linha] == tabuleiro[i+1+linha][i+1+linha])
+            if(tabuleiro[linha+i][coluna+i] == jogador && linha+i<8 && coluna+i<8) // Direita-baixo
                 contadores[0]++;
-            if(tabuleiro[a][a] == tabuleiro[i-1][i-1])
+
+            if(tabuleiro[linha-i][coluna-i] == jogador && linha-i>=0 && coluna-i>=0) // Esquerda-Cima
                 contadores[1]++;
+
+            if(tabuleiro[linha+i][coluna-i] == jogador && linha+i<8 && coluna-i>=0) // Direita-cima
+                contadores[2]++;
+
+            if(tabuleiro[linha-i][coluna+i] == jogador && linha-i>=0 && coluna+i<8) // Esquerda-baixo
+                contadores[3]++;
+
+        }
+        for(int a=0; a<4; a++)
+        {
+            if(contadores[a] >= 2)
+            {
+                vira(tabuleiro, 2, linha, coluna, a, jogador);
+                conta_s ++;
+            }
         }
     }
 
