@@ -19,8 +19,29 @@ void printa(int *ptr) //Função de debbug
     }
 }
 
+int vira(int tabuleiro[8][8], int eixo, int start, int jogador)
+{
+    int contador = 0;
+    switch (eixo)
+    {
+        case 0:
+            for(int i = 0; i<8; i++)
+            {
+                if(tabuleiro[start][i] == jogador)
+                    for(int j=i+1; j<8; j++)
+                    {
 
+                        if(tabuleiro[start][j] == jogador)
+                            break;
+                        else
+                            tabuleiro[start][j] == jogador;
+                    }
+            }
+            break;
+    }
 
+    return 0;
+}
 
 void DesenhaTabuleiro(int tabuleiro[8][8])
 {
@@ -94,7 +115,10 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
             if(tabuleiro[linha][i] == jogador)
                 contadores[0]++;
             if(contadores[0] >= 2 && tabuleiro[linha][i-1] == -1*jogador)
+            {
+                vira(tabuleiro, 0, linha, jogador);
                 conta_s ++;
+            }
         }
     }
 
