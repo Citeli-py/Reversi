@@ -64,10 +64,11 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
 
     int linha = jogada.linha;
     int coluna = jogada.coluna;
+    int conta_s = 0;
     int contadores[4] = {0, 0, 0, 0};
 
     if((tabuleiro[linha][coluna] != 0) || (linha >= 8) || (coluna>=8)||(linha<0)||(coluna<0)) //Peça em cima da outra ou fora do tabuleiro
-        return -1;
+        return 0;
 
     //Pelo menos uma peça diferente tem q estar do lado da peça a ser colocada
     for(int i=linha-1;i<=linha+1; i++)
@@ -77,12 +78,10 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
                 if(tabuleiro[i][j] == -1*jogador)
                     contadores[0]++;
     }
-
     if(contadores[0] <= 0)
-        return -1;
+        return 0;
 
     contadores[0] = 0;
-
     tabuleiro[linha][coluna] = jogador;
 
     //Contadores[0] são as peças iguais a do jogador
@@ -95,11 +94,9 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
             if(tabuleiro[linha][i] == jogador)
                 contadores[0]++;
             if(contadores[0] >= 2 && tabuleiro[linha][i-1] == -1*jogador)
-                return 1;
+                conta_s ++;
         }
     }
-    //else
-    //    return -1;
 
     contadores[0] = 0;
 
@@ -111,11 +108,9 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
             if(tabuleiro[i][coluna] == jogador)
                 contadores[0]++;
             if(contadores[0] >= 2)
-                return 1;
+                conta_s ++;
         }
     }
-    //else
-    //    return -1;
 
     //diagonal
    /* for(int i = 0, a = 7; i<8, a>-1; i++, a--)
@@ -127,15 +122,20 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
             contadores[1]++;
     }
 */
-    tabuleiro[linha][coluna] = 0;
-    return 2;
+    if(conta_s>0)
+        return 1;
+    else
+    {
+        tabuleiro[linha][coluna] = 0;
+        return 2;
+    }
 }
 
 
 coordenada EscolheJogada()
 {
     coordenada jogada;
-    printf("Digite as coordenadas da jogada: ");
+    printf("Digite a linha e a coluna: ");
     scanf("%d", &jogada.linha);
     scanf("%d", &jogada.coluna);
     jogada.linha--; jogada.coluna--;
@@ -167,15 +167,14 @@ int main()
     coordenada jogada;
     int tabuleiro[8][8];
     int jogador = -1;
-    //tabuleiro
-    //matriz_teste(&tabuleiro[0][0]);
+    int jogadas = 1;
     IniciaTabuleiro(&tabuleiro);
 
-    while (1)
+    while (jogadas<=64)
     {
+        printf("Jogada: %d \nJogador: %d\n", jogadas, jogador);
         DesenhaTabuleiro(tabuleiro);
         jogada = EscolheJogada();
-        //printf("Linha: %d\nColuna: %d", jogada.linha, jogada.coluna);
         int res = ExecutaJogada(tabuleiro, jogador, jogada);
 
         if(res == 1)
@@ -184,11 +183,12 @@ int main()
                 jogador = -1;
             else
                 jogador = 1;
+            jogadas++;
         }
 
         switch (res)
         {
-        case -1:
+        case 0:
             printf("\nJogada invalida!\n");
             break;
 
@@ -200,8 +200,6 @@ int main()
             printf("\nErro ou diagonal\n");
             break;
         }
-        //printf("%d\n",res);
-        //DesenhaTabuleiro(tabuleiro);
     }
     return 0;
 
