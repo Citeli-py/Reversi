@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+Grupo:
+    Juan Melo
+    Matheus Citeli
+    Rafael Tiribas
+*/
+
 typedef struct
 {
     int linha;
