@@ -7,10 +7,6 @@ typedef struct
     int coluna;
 } coordenada;
 
-void jogada_random(int *ptr) //Função de debbug
-{
-    return 0;
-}
 
 void vira(int tabuleiro[8][8], int eixo, int linha, int coluna, int conta, int jogador)
 {
@@ -147,8 +143,6 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
     contadores[0] = 0;
     tabuleiro[linha][coluna] = jogador;
 
-    //Contadores[0] são as peças iguais a do jogador
-    //contadores[1] são para as peças diferentes
     //horizontal
     if(jogador != tabuleiro[linha][coluna+1] && jogador != tabuleiro[linha][coluna-1])
     {
@@ -221,7 +215,7 @@ int ExecutaJogada(int tabuleiro[8][8], int jogador, coordenada jogada)
     else
     {
         tabuleiro[linha][coluna] = 0;
-        return 2;
+        return -1;
     }
 }
 
@@ -263,11 +257,16 @@ int main()
     coordenada jogada;
     int jogador = -1;
     int jogadas = 1;
+    int pontos[2] = {2,2};
     IniciaTabuleiro(&tabuleiro);
 
-    while (jogadas<=64)
+    while (jogadas<64)
     {
-        printf("Jogada: %d \nJogador: %d\n", jogadas, jogador);
+        if(jogador == -1)
+            printf("Jogada: %d \nJogador: 1\nPlacar -> B:%d X W:%d\n", jogadas, pontos[0], pontos[1]);
+        else
+            printf("Jogada: %d \nJogador: 2\nPlacar -> B:%d X W:%d\n", jogadas, pontos[0], pontos[1]);
+
         DesenhaTabuleiro(tabuleiro);
         jogada = EscolheJogada();
         int res = ExecutaJogada(tabuleiro, jogador, jogada);
@@ -283,19 +282,32 @@ int main()
 
         switch (res)
         {
-        case 0:
+        case -1:
             printf("\nJogada invalida!\n");
             break;
 
-        case 1:
+        case 0:
             printf("\nJogada valida!\n");
             break;
-        
-        default:
-            printf("\nErro ou diagonal\n");
-            break;
         }
+
+        pontos[0]=0; pontos[1]=0;
+        for(int i=0;i<8; i++)
+            for (int j=0; j<8; j++)
+            {
+                if(tabuleiro[i][j] == -1)
+                    pontos[0] ++;
+                if(tabuleiro[i][j] == 1)
+                    pontos[1] ++;
+            }
+            
     }
+    if(pontos[0] > pontos[1])
+        printf("\nO jogador 1 Ganhou\n");
+    if(pontos[0] < pontos[1])
+        printf("\nO jogador 2 Ganhou\n");
+    else
+        printf("\nEmpate\n");
     return 0;
 
 }
