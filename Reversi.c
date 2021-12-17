@@ -1,20 +1,30 @@
-#include "stdio.h"
+#include <stdio.h>
 
 struct jogada{
     int linha,coluna;
 };
 
-void IniciaTabuleiro(int tab[8][8]){
+struct Posicao{
+    int tabuleiro[8][8];
+    int jogadorVez;
+};
+
+
+struct Posicao IniciaTabuleiro(){
+    struct Posicao jogo;
+
     for (int i=0;i<8;i++){
         for (int j=0;j<8;j++){
-            tab[i][j]=0;
+            jogo.tabuleiro[i][j]=0;
         }
     }
-    tab[3][3] = tab[4][4] = 1;
-    tab[3][4] = tab[4][3] = -1;
+    jogo.tabuleiro[3][3] = jogo.tabuleiro[4][4] = 1;
+    jogo.tabuleiro[3][4] = jogo.tabuleiro[4][3] = -1;
+
+    return jogo;
 }
 
-void DesenhaTabuleiro(int tab[8][8]){
+void DesenhaTabuleiro(struct Posicao jogo){
     printf("  ");
     for (int i = 0; i < 8; i++) // Cria os numeros acima
         printf(" %d ",i);
@@ -23,9 +33,9 @@ void DesenhaTabuleiro(int tab[8][8]){
     for (int i=0;i<8;i++){
         printf("%d|",i);
         for (int j=0;j<8;j++){
-            if (tab[i][j]==0){
+            if (jogo.tabuleiro[i][j]==0){
                 printf(" - ");
-            }else if (tab[i][j]==1){
+            }else if (jogo.tabuleiro[i][j]==1){
                 printf(" W ");
             }else printf(" B ");
         }
@@ -41,12 +51,12 @@ struct jogada EscolheJogada(){
     return resp;
 }
 
-int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int deltaC){
+int TestaDirecao(struct Posicao jogo, struct jogada jog, int deltaL, int deltaC){
     int i=jog.linha+deltaL;
     int j=jog.coluna+deltaC;
     int cont=0;
 
-    while (i>=0 && i<8 && j>=0 && j<8 && tab[i][j]==-jogVez){
+    while (i>=0 && i<8 && j>=0 && j<8 && jogo.tabuleiro[i][j]==-jogo.jogadorVez){
         cont++;
         i += deltaL;
         j += deltaC;
@@ -54,51 +64,54 @@ int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int d
 
     if (i>=8||i<0||j>=8||j<0){
         cont = 0;
-    }else if (tab[i][j]==0)
+    }else if (jogo.tabuleiro[i][j]==0)
         cont = 0;
 
     return cont;
 }
 
-void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, int deltaC){
+struct Posicao ViraPedrasDirecao(struct Posicao jogo, struct jogada jog, int deltaL, int deltaC){
     int i=jog.linha+deltaL;
     int j=jog.coluna+deltaC;
 
-    while (tab[i][j]==-jogVez){
-        tab[i][j] = - tab[i][j];
+    while (jogo.tabuleiro[i][j]==-jogo.jogadorVez){
+        jogo.tabuleiro[i][j] = - jogo.tabuleiro[i][j];
         i += deltaL;
         j += deltaC;
     }
+    return jogo;
 }
 
-int ExecutaJogada(int tab[8][8], int jogVez, struct jogada jog){
-    int resposta=0;
+struct Posicao ExecutaJogada(struct Posicao jogo, struct jogada jog, int *resposta){
+    *resposta=0;
 
-    if (jog.linha>=0&&jog.linha<8&&jog.coluna>=0&&jog.linha<8&&tab[jog.linha][jog.coluna]==0){
+    if (jog.linha>=0&&jog.linha<8&&jog.coluna>=0&&jog.linha<8&&jogo.tabuleiro[jog.linha][jog.coluna]==0){
 
         for (int deltaL=-1;deltaL<=1;deltaL++){
             for (int deltaC=-1;deltaC<=1;deltaC++){
                 if (deltaL!=0||deltaC!=0){
-                    if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
-                        ViraPedrasDirecao(tab,jogVez,jog,deltaL,deltaC);
-                        resposta=1;
+                    if (TestaDirecao(jogo, jog, deltaL, deltaC)){
+                        jogo = ViraPedrasDirecao(jogo, jog, deltaL, deltaC);
+                        *resposta=1;
                     }
                 }
             }
         }
 
-        if (resposta==1){
-            tab[jog.linha][jog.coluna] = jogVez;
+        if (*resposta==1){
+            jogo.tabuleiro[jog.linha][jog.coluna] = jogo.jogadorVez;
         }
     }
-    return resposta;
+    // ------------------------ Com Erro -------------------
+    printf("\n--%d--\n", *resposta);// Debug
+    return jogo;
 }
 
-void CalculaVencedor(int tab[8][8]){
+void CalculaVencedor(struct Posicao jogo){
     int brancas=0;
     for (int i=0;i<8;i++){
         for (int j=0;j<8;j++){
-            if (tab[i][j]==1)
+            if (jogo.tabuleiro[i][j]==1)
                 brancas++;
         }
     }
@@ -112,30 +125,32 @@ void CalculaVencedor(int tab[8][8]){
 
 int main(){
 
-    int tabuleiro[8][8];
-    int jogaVez = -1;
+    struct Posicao jogo;
+    int resposta;
+    jogo.jogadorVez = -1;
     int casasVazias = 60;
     struct jogada jog;
 
 
-    IniciaTabuleiro(tabuleiro);
+    jogo = IniciaTabuleiro();
 
     while (casasVazias>0){
-        DesenhaTabuleiro(tabuleiro);
+        DesenhaTabuleiro(jogo);
 
-        if (jogaVez==1){
+        if (jogo.jogadorVez==1){
             printf("Jogador Brancas\n");
         }else printf("Jogador Pretas\n");
 
         jog = EscolheJogada();
+        jogo = ExecutaJogada(jogo,jog, &resposta);
 
-        if (ExecutaJogada(tabuleiro,jogaVez,jog)==0){
+        if (resposta==0){
             printf("Jogada invalida\n");
         }else{
-            jogaVez = -jogaVez;
+            jogo.jogadorVez = -jogo.jogadorVez;
             casasVazias--;
         }
     }
 
-    CalculaVencedor(tabuleiro);
+    CalculaVencedor(jogo);
 }
