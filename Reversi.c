@@ -156,6 +156,7 @@ int ExecutaJogada(int tab[8][8], int jogVez, struct jogada jog){
 
 struct jogada *Jogadas(int tab[8][8], int jogVez)
 {
+    int aux=1;
     struct jogada *lista;
     lista = inicializa();
     struct jogada jog;
@@ -163,15 +164,17 @@ struct jogada *Jogadas(int tab[8][8], int jogVez)
         for(int j=0;j<8;j++)
         {
             jog.linha = i; jog.coluna = j;
-            for (int deltaL=-1;deltaL<=1;deltaL++){
-                for (int deltaC=-1;deltaC<=1;deltaC++){
+            for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
+                for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
                     if (deltaL!=0||deltaC!=0){
                         if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
                             lista = insere(lista, i, j);
+                            aux=0;
                         }
                     }
                 }
             }
+            aux=1;
         }
     return lista;
 }
