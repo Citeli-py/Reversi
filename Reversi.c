@@ -94,10 +94,16 @@ void DesenhaTabuleiro(int tab[8][8]){
     printf(" +------------------------+\n");
 }
 
-struct jogada EscolheJogada(){
+struct jogada EscolheJogada(struct jogada *lista){
     struct jogada resp;
-    printf("Digite a linha e a coluna:");
-    scanf("%d %d",&(resp.linha),&(resp.coluna));
+    struct jogada *p=lista;
+    int n;
+    printf("Escolha a sua jogada: ");
+    scanf("%d",&n);
+    for(int i=0; i<n; i++)
+        p=p->prox;
+
+    resp.linha = p->linha; resp.coluna = p->coluna;
     return resp;
 }
 
@@ -216,7 +222,7 @@ int main(){
             printf("\nJogador Brancas\n");
         }else printf("\nJogador Pretas\n");
 
-        jog = EscolheJogada();
+        jog = EscolheJogada(lista);
 
         if (ExecutaJogada(tabuleiro,jogaVez,jog)==0){
             printf("Jogada inválida\n");
