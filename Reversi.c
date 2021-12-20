@@ -11,12 +11,14 @@ void printa_lista(struct jogada *lista)
     struct jogada *p = lista;
     struct jogada *fim = lista;
     int i=1;
+    printf("\n");
     do
     {
-        printf("\n%d-(%d, %d)",i, p->linha, p->coluna);
+        printf("%d-(%d, %d)\n",i, p->linha, p->coluna);
         p = p->prox;
         i++;
     }while (p != fim);
+    printf("\n");
 }
 
 struct jogada *inicializa()
@@ -34,9 +36,9 @@ struct jogada *Criaposicao(int linha, int coluna)
     return novo;
 }
 
-struct jogada *insere(struct jogada *lista, int linha, int coluna)
+struct jogada *insere(struct jogada *lista, struct jogada jog)
 {
-    struct jogada *novo = Criaposicao(linha, coluna);
+    struct jogada *novo = Criaposicao(jog.linha, jog.coluna);
 
     if(lista==NULL)
     {
@@ -56,12 +58,15 @@ struct jogada *insere(struct jogada *lista, int linha, int coluna)
 
 void libera(struct jogada *lista)
 {
-    struct jogada *fim = lista;
-    do
+   struct jogada* tmp;
+
+    for(int i=0; i<50; i++)
     {
-        free(lista);
-        lista=lista->prox;
-    }while (lista != fim);
+        tmp = lista;
+        lista = lista->prox;
+        free(tmp);
+    }
+
 }
 
 void IniciaTabuleiro(int tab[8][8]){
@@ -169,12 +174,12 @@ struct jogada *Jogadas(int tab[8][8], int jogVez)
     for(int i=0;i<8;i++)
         for(int j=0;j<8;j++)
         {
-            jog.linha = i; jog.coluna = j;
+            jog.linha = j; jog.coluna = i;
             for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
                 for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
                     if (deltaL!=0||deltaC!=0){
                         if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
-                            lista = insere(lista, i, j);
+                            lista = insere(lista, jog);
                             aux=0;
                         }
                     }
@@ -231,6 +236,7 @@ int main(){
             casasVazias--;
         }
         libera(lista);
+        printa_lista(lista);
     }
 
     CalculaVencedor(tabuleiro);
