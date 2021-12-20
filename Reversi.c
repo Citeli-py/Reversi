@@ -105,9 +105,9 @@ struct jogada EscolheJogada(struct jogada *lista){
     int n;
     printf("Escolha a sua jogada: ");
     scanf("%d",&n);
-    for(int i=0; i<n; i++)
+    for(int i=0; i<n-1; i++)
         p=p->prox;
-
+    printf("\n---(%d, %d)---\n", p->linha, p->coluna);//Debug
     resp.linha = p->linha; resp.coluna = p->coluna;
     return resp;
 }
@@ -236,7 +236,7 @@ int main(){
             casasVazias--;
         }
         libera(lista);
-        printa_lista(lista);
+        //printa_lista(lista);
     }
 
     CalculaVencedor(tabuleiro);
