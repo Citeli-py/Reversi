@@ -151,22 +151,18 @@ void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, 
 int ExecutaJogada(int tab[8][8], int jogVez, struct jogada jog){
     int resposta=0;
 
-    if (jog.linha>=0&&jog.linha<8&&jog.coluna>=0&&jog.linha<8&&tab[jog.linha][jog.coluna]==0){
-
-        for (int deltaL=-1;deltaL<=1;deltaL++){
-            for (int deltaC=-1;deltaC<=1;deltaC++){
-                if (deltaL!=0||deltaC!=0){
-                    if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
-                        ViraPedrasDirecao(tab,jogVez,jog,deltaL,deltaC);
-                        resposta=1;
-                    }
+    for (int deltaL=-1;deltaL<=1;deltaL++){
+        for (int deltaC=-1;deltaC<=1;deltaC++){
+            if (deltaL!=0||deltaC!=0){
+                if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
+                    ViraPedrasDirecao(tab,jogVez,jog,deltaL,deltaC);
+                    resposta=1;
                 }
             }
         }
-
-        if (resposta==1){
-            tab[jog.linha][jog.coluna] = jogVez;
-        }
+    }
+    if (resposta==1){
+        tab[jog.linha][jog.coluna] = jogVez;
     }
     return resposta;
 }
