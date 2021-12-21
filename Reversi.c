@@ -181,7 +181,7 @@ struct jogada *CalculaJogadasValidas(int tab[8][8], int jogVez)
         for(int j=0;j<8;j++)
         {
             jog.linha = j; jog.coluna = i;
-            if (jog.linha>=0&&jog.linha<8&&jog.coluna>=0&&jog.linha<8&&tab[jog.linha][jog.coluna]==0){
+            if (tab[jog.linha][jog.coluna]==0){
                 for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
                     for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
                         if (deltaL!=0||deltaC!=0){
