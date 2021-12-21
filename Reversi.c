@@ -165,9 +165,9 @@ int ExecutaJogada(int tab[8][8], int jogVez, struct jogada jog){
     return resposta;
 }
 
-struct jogada *Jogadas(int tab[8][8], int jogVez)
+struct jogada *CalculaJogadasValidas(int tab[8][8], int jogVez)
 {
-    int aux=1;
+    int aux=1, lista_vazia=1;
     struct jogada *lista;
     lista = inicializa();
     struct jogada jog;
@@ -175,19 +175,25 @@ struct jogada *Jogadas(int tab[8][8], int jogVez)
         for(int j=0;j<8;j++)
         {
             jog.linha = j; jog.coluna = i;
-            for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
-                for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
-                    if (deltaL!=0||deltaC!=0){
-                        if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
-                            lista = insere(lista, jog);
-                            aux=0;
+            if (jog.linha>=0&&jog.linha<8&&jog.coluna>=0&&jog.linha<8&&tab[jog.linha][jog.coluna]==0){
+                for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
+                    for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
+                        if (deltaL!=0||deltaC!=0){
+                            if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
+                                lista = insere(lista, jog);
+                                aux=0;
+                                lista_vazia = 0;
+                            }
                         }
                     }
                 }
             }
             aux=1;
         }
-    return lista;
+    if(lista_vazia==0)
+        return lista;
+    else
+        return NULL;
 }
 
 void CalculaVencedor(int tab[8][8]){
@@ -220,24 +226,31 @@ int main(){
         DesenhaTabuleiro(tabuleiro);
         struct jogada *lista;
         lista = inicializa();
-        lista = Jogadas(tabuleiro, jogaVez);
-        printa_lista(lista);
+        lista = CalculaJogadasValidas(tabuleiro, jogaVez);
 
-        if (jogaVez==1){
-            printf("\nJogador Brancas\n");
-        }else printf("\nJogador Pretas\n");
-
-        jog = EscolheJogada(lista);
-
-        if (ExecutaJogada(tabuleiro,jogaVez,jog)==0){
-            printf("Jogada inválida\n");
-        }else{
+        if(lista == NULL)
+        {
+            printf("\nSem jogadas validas, perdeu a vez\n");
             jogaVez = -jogaVez;
-            casasVazias--;
         }
-        libera(lista);
+        else
+        {
+            printa_lista(lista);
+
+            if (jogaVez==1){
+                printf("\nJogador Brancas\n");
+            }else printf("\nJogador Pretas\n");
+
+            jog = EscolheJogada(lista);
+
+            if (ExecutaJogada(tabuleiro,jogaVez,jog)==0){
+                printf("Jogada inválida\n");
+            }else{
+                jogaVez = -jogaVez;
+                casasVazias--;
+            }
+        }
         //printa_lista(lista);
     }
-
     CalculaVencedor(tabuleiro);
 }
