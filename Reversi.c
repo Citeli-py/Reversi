@@ -6,19 +6,20 @@ struct jogada{
     struct jogada *prox,*ant;
 };
 
-void printa_lista(struct jogada *lista)
+int printa_lista(struct jogada *lista)
 {
     struct jogada *p = lista;
     struct jogada *fim = lista;
-    int i=1;
-    printf("\n");
+    int i=0;
+    //printf("\n");
     do
     {
-        printf("%d-(%d, %d)\n",i, p->linha, p->coluna);
+        printf("%d-(%d, %d)\n",i+1, p->linha, p->coluna);
         p = p->prox;
         i++;
     }while (p != fim);
     printf("\n");
+    return i;
 }
 
 struct jogada *inicializa()
@@ -102,12 +103,17 @@ void DesenhaTabuleiro(int tab[8][8]){
 struct jogada EscolheJogada(struct jogada *lista){
     struct jogada resp;
     struct jogada *p=lista;
-    int n;
-    printf("Escolha a sua jogada: ");
-    scanf("%d",&n);
+    int n, num_lista=printa_lista(lista);
+    do
+    {
+        printf("Escolha a sua jogada: ");
+        scanf("%d",&n);
+        if(n<1||n>num_lista)
+            printf("jogada invalida!\n");
+    }while(n<1||n>num_lista);
+
     for(int i=0; i<n-1; i++)
         p=p->prox;
-    printf("\n---(%d, %d)---\n", p->linha, p->coluna);//Debug
     resp.linha = p->linha; resp.coluna = p->coluna;
     return resp;
 }
@@ -235,22 +241,18 @@ int main(){
         }
         else
         {
-            printa_lista(lista);
-
             if (jogaVez==1){
-                printf("\nJogador Brancas\n");
+            printf("\nJogador Brancas\n");
             }else printf("\nJogador Pretas\n");
-
+            
             jog = EscolheJogada(lista);
 
-            if (ExecutaJogada(tabuleiro,jogaVez,jog)==0){
-                printf("Jogada inválida\n");
-            }else{
-                jogaVez = -jogaVez;
-                casasVazias--;
-            }
+            ExecutaJogada(tabuleiro,jogaVez,jog);
+            jogaVez = -jogaVez;
+            casasVazias--;
         }
         //printa_lista(lista);
     }
+    DesenhaTabuleiro(tabuleiro);
     CalculaVencedor(tabuleiro);
 }
