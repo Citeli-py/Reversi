@@ -244,7 +244,7 @@ int main(){
             if (jogaVez==1){
             printf("\nJogador Brancas\n");
             }else printf("\nJogador Pretas\n");
-            
+
             jog = EscolheJogada(lista);
 
             ExecutaJogada(tabuleiro,jogaVez,jog);
@@ -253,6 +253,7 @@ int main(){
         }
         //printa_lista(lista);
     }
+    system("cls");
     DesenhaTabuleiro(tabuleiro);
     CalculaVencedor(tabuleiro);
 }
