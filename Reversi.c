@@ -1,10 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct jogada{
-    int linha,coluna;
+struct jogada
+{
+    int linha, coluna;
     struct jogada *prox,*ant;
 };
+
+struct Posicao
+{
+    int tabuleiro[8][8];
+    int jogadorVez;
+};
+
 
 int printa_lista(struct jogada *lista)
 {
@@ -22,10 +30,12 @@ int printa_lista(struct jogada *lista)
     return i;
 }
 
+
 struct jogada *inicializa()
 {
     return NULL;
 }
+
 
 struct jogada *Criaposicao(int linha, int coluna)
 {
@@ -36,6 +46,7 @@ struct jogada *Criaposicao(int linha, int coluna)
     novo->ant = NULL;
     return novo;
 }
+
 
 struct jogada *insere(struct jogada *lista, struct jogada jog)
 {
@@ -57,20 +68,50 @@ struct jogada *insere(struct jogada *lista, struct jogada jog)
     return lista;
 }
 
-void libera(struct jogada *lista)
-{
-   struct jogada* tmp;
 
-    for(int i=0; i<50; i++)
+
+//verificar o tamanho da lista
+int tamanho(struct jogada *lista)
+{
+    int n = 0;
+
+    struct jogada *j = lista->ant;
+
+    for(struct jogada *k = lista; k!=j; k=k->prox)
+        {
+
+            n++;
+
+        }
+    n++;
+
+    return n;
+}
+
+
+
+//destruindo a lista
+void destruirlista(struct jogada *lista)
+{
+
+    int contador = 0;
+    int n = tamanho(lista);   
+    struct jogada *t;
+    struct jogada *p = lista;
+    
+    while (contador <= n)
     {
-        tmp = lista;
-        lista = lista->prox;
-        free(tmp);
+        t = p->prox; 
+        free(p); 
+        p = t; 
+        contador++;
     }
 
 }
 
-void IniciaTabuleiro(int tab[8][8]){
+
+void IniciaTabuleiro(int tab[8][8])
+{
     for (int i=0;i<8;i++){
         for (int j=0;j<8;j++){
             tab[i][j]=0;
@@ -80,7 +121,10 @@ void IniciaTabuleiro(int tab[8][8]){
     tab[3][4] = tab[4][3] = -1;
 }
 
-void DesenhaTabuleiro(int tab[8][8]){
+
+
+void DesenhaTabuleiro(int tab[8][8])
+{
     printf("  ");
     for (int i = 0; i < 8; i++) // Cria os numeros acima
         printf(" %d ",i);
@@ -100,7 +144,10 @@ void DesenhaTabuleiro(int tab[8][8]){
     printf(" +------------------------+\n");
 }
 
-struct jogada EscolheJogada(struct jogada *lista){
+
+
+struct jogada EscolheJogada(struct jogada *lista)
+{
     struct jogada resp;
     struct jogada *p=lista;
     int n, num_lista=printa_lista(lista);
@@ -118,7 +165,9 @@ struct jogada EscolheJogada(struct jogada *lista){
     return resp;
 }
 
-int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int deltaC){
+
+int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int deltaC)
+{
     int i=jog.linha+deltaL;
     int j=jog.coluna+deltaC;
     int cont=0;
@@ -137,7 +186,8 @@ int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int d
     return cont;
 }
 
-void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, int deltaC){
+void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, int deltaC)
+{
     int i=jog.linha+deltaL;
     int j=jog.coluna+deltaC;
 
@@ -220,7 +270,6 @@ int main(){
     int jogaVez = -1;
     int casasVazias = 60;
     struct jogada jog;
-
     IniciaTabuleiro(tabuleiro);
 
 
@@ -252,4 +301,5 @@ int main(){
     system("cls");
     DesenhaTabuleiro(tabuleiro);
     CalculaVencedor(tabuleiro);
+    destruirlista(lista);
 }
