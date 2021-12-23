@@ -7,7 +7,7 @@ struct jogada
     struct jogada *prox,*ant;
 };
 
-struct Posicao
+struct posicao
 {
     int tabuleiro[8][8];
     int jogadorVez;
@@ -271,35 +271,40 @@ int main(){
     int casasVazias = 60;
     struct jogada jog;
     IniciaTabuleiro(tabuleiro);
-
+    struct posicao joga;
+    
 
     while (casasVazias>0){
-        DesenhaTabuleiro(tabuleiro);
+        DesenhaTabuleiro(joga.tabuleiro);
         struct jogada *lista;
         lista = inicializa();
-        lista = CalculaJogadasValidas(tabuleiro, jogaVez);
+        lista = CalculaJogadasValidas(joga.tabuleiro, joga.jogadorVez);
 
         if(lista == NULL)
         {
             printf("\nSem jogadas validas, perdeu a vez\n");
-            jogaVez = -jogaVez;
+            joga.jogadorVez = -joga.jogadorVez;
         }
         else
         {
-            if (jogaVez==1){
+            if (joga.jogadorVez == 1){
             printf("\nJogador Brancas\n");
             }else printf("\nJogador Pretas\n");
 
             jog = EscolheJogada(lista);
 
-            ExecutaJogada(tabuleiro,jogaVez,jog);
-            jogaVez = -jogaVez;
+            ExecutaJogada(tabuleiro,joga.jogadorVez,jog);
+            joga.jogadorVez = -joga.jogadorVez;
             casasVazias--;
         }
         //printa_lista(lista);
     }
+
+
     system("cls");
     DesenhaTabuleiro(tabuleiro);
     CalculaVencedor(tabuleiro);
     destruirlista(lista);
+    printa_lista(lista);
+
 }
