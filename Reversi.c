@@ -83,7 +83,7 @@ int tamanho(struct jogada *lista)
             n++;
 
         }
-    n++;
+    n = n+2;
 
     return n;
 }
@@ -110,20 +110,27 @@ void destruirlista(struct jogada *lista)
 }
 
 
-void IniciaTabuleiro(int tab[8][8])
+
+
+struct posicao IniciaTabuleiro()
 {
+    struct posicao joga;
     for (int i=0;i<8;i++){
         for (int j=0;j<8;j++){
-            tab[i][j]=0;
+            joga.tabuleiro[i][j]=0;
         }
     }
-    tab[3][3] = tab[4][4] = 1;
-    tab[3][4] = tab[4][3] = -1;
+    joga.tabuleiro[3][3] = joga.tabuleiro[4][4] = 1;
+    joga.tabuleiro[3][4] = joga.tabuleiro[4][3] = -1;
+
+    joga.jogadorVez = -1;
+
+    return joga;
 }
 
 
 
-void DesenhaTabuleiro(int tab[8][8])
+void DesenhaTabuleiro(struct posicao joga)
 {
     printf("  ");
     for (int i = 0; i < 8; i++) // Cria os numeros acima
@@ -133,9 +140,9 @@ void DesenhaTabuleiro(int tab[8][8])
     for (int i=0;i<8;i++){
         printf("%d|",i);
         for (int j=0;j<8;j++){
-            if (tab[i][j]==0){
+            if (joga.tabuleiro[i][j]==0){
                 printf(" - ");
-            }else if (tab[i][j]==1){
+            }else if (joga.tabuleiro[i][j]==1){
                 printf(" W ");
             }else printf(" B ");
         }
@@ -191,34 +198,45 @@ void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, 
     int i=jog.linha+deltaL;
     int j=jog.coluna+deltaC;
 
-    while (tab[i][j]==-jogVez){
+    while (tab[i][j]==-jogVez)
+    {
         tab[i][j] = - tab[i][j];
         i += deltaL;
         j += deltaC;
     }
+
 }
 
-int ExecutaJogada(int tab[8][8], int jogVez, struct jogada jog){
+int ExecutaJogada(struct posicao *jogo, struct jogada jog){
+    
+    int jogVez = jogo->jogadorVez;
+    
     int resposta=0;
 
-    for (int deltaL=-1;deltaL<=1;deltaL++){
-        for (int deltaC=-1;deltaC<=1;deltaC++){
+    for (int deltaL=-1;deltaL<=1;deltaL++)
+    {
+        for (int deltaC=-1;deltaC<=1;deltaC++)
+        {
             if (deltaL!=0||deltaC!=0){
-                if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
-                    ViraPedrasDirecao(tab,jogVez,jog,deltaL,deltaC);
+                if (TestaDirecao(jogo->tabuleiro,jogVez,jog,deltaL,deltaC))
+                {
+                    ViraPedrasDirecao(jogo->tabuleiro,jogVez,jog,deltaL,deltaC);
                     resposta=1;
                 }
             }
         }
     }
-    if (resposta==1){
-        tab[jog.linha][jog.coluna] = jogVez;
+    if (resposta==1)
+    {
+        jogo->tabuleiro[jog.linha][jog.coluna] = jogVez;
     }
     return resposta;
 }
 
-struct jogada *CalculaJogadasValidas(int tab[8][8], int jogVez)
+struct jogada *CalculaJogadasValidas(struct posicao joga)
 {
+    int jogVez = joga.jogadorVez;
+
     int aux=1, lista_vazia=1;
     struct jogada *lista;
     lista = inicializa();
@@ -227,11 +245,11 @@ struct jogada *CalculaJogadasValidas(int tab[8][8], int jogVez)
         for(int j=0;j<8;j++)
         {
             jog.linha = j; jog.coluna = i;
-            if (tab[jog.linha][jog.coluna]==0){
+            if (joga.tabuleiro[jog.linha][jog.coluna]==0){
                 for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
                     for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
                         if (deltaL!=0||deltaC!=0){
-                            if (TestaDirecao(tab,jogVez,jog,deltaL,deltaC)){
+                            if (TestaDirecao(joga.tabuleiro,jogVez,jog,deltaL,deltaC)){
                                 lista = insere(lista, jog);
                                 aux=0;
                                 lista_vazia = 0;
@@ -247,6 +265,7 @@ struct jogada *CalculaJogadasValidas(int tab[8][8], int jogVez)
     else
         return NULL;
 }
+
 
 void CalculaVencedor(int tab[8][8]){
     int brancas=0;
@@ -266,19 +285,18 @@ void CalculaVencedor(int tab[8][8]){
 
 int main(){
 
-    int tabuleiro[8][8];
-    int jogaVez = -1;
     int casasVazias = 60;
     struct jogada jog;
-    IniciaTabuleiro(tabuleiro);
     struct posicao joga;
+    joga = IniciaTabuleiro();
+    struct jogada *lista;
     
 
-    while (casasVazias>0){
-        DesenhaTabuleiro(joga.tabuleiro);
-        struct jogada *lista;
+    while (casasVazias>0)
+    {
+        DesenhaTabuleiro(joga);
         lista = inicializa();
-        lista = CalculaJogadasValidas(joga.tabuleiro, joga.jogadorVez);
+        lista = CalculaJogadasValidas(joga);
 
         if(lista == NULL)
         {
@@ -293,17 +311,18 @@ int main(){
 
             jog = EscolheJogada(lista);
 
-            ExecutaJogada(tabuleiro,joga.jogadorVez,jog);
+            ExecutaJogada(&joga,jog);
             joga.jogadorVez = -joga.jogadorVez;
             casasVazias--;
         }
-        //printa_lista(lista);
+        
+
     }
 
 
     system("cls");
-    DesenhaTabuleiro(tabuleiro);
-    CalculaVencedor(tabuleiro);
+    DesenhaTabuleiro(joga);
+    CalculaVencedor(joga.tabuleiro);
     destruirlista(lista);
     printa_lista(lista);
 
