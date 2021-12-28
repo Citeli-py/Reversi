@@ -71,23 +71,17 @@ struct jogada *insere(struct jogada *lista, struct jogada jog)
 
 
 //verificar o tamanho da lista
-int tamanho(struct jogada *lista)
-{
-    int n = 0;
-
-    struct jogada *j = lista->ant;
-
-    for(struct jogada *k = lista; k!=j; k=k->prox)
-        {
-
-            n++;
-
-        }
-    n = n+2;
-
-    return n;
+int tamanho(struct jogada *lista){
+  if (lista==NULL) return 0;  
+  int cont = 0;
+  struct jogada *aux = lista; 
+ 
+  do{
+     cont++;
+     aux = aux->prox;
+  }while (aux!=lista); 
+  return cont;
 }
-
 
 
 //destruindo a lista
@@ -98,9 +92,9 @@ void destruirlista(struct jogada *lista)
     int n = tamanho(lista);   
     struct jogada *t;
     struct jogada *p = lista;
-    
     while (contador <= n)
     {
+
         t = p->prox; 
         free(p); 
         p = t; 
@@ -324,6 +318,4 @@ int main(){
     DesenhaTabuleiro(joga);
     CalculaVencedor(joga.tabuleiro);
     destruirlista(lista);
-    printa_lista(lista);
-
 }
