@@ -4,7 +4,12 @@
 struct jogada
 {
     int linha, coluna;
-    struct jogada *prox,*ant;
+};
+
+struct elemento
+{
+    struct jogada jog;
+    struct elemento *prox,*ant;
 };
 
 struct posicao
@@ -14,15 +19,15 @@ struct posicao
 };
 
 
-int printa_lista(struct jogada *lista)
+int printa_lista(struct elemento *lista)
 {
-    struct jogada *p = lista;
-    struct jogada *fim = lista;
+    struct elemento *p = lista;
+    struct elemento *fim = lista;
     int i=0;
     //printf("\n");
     do
     {
-        printf("%d-(%d, %d)\n",i+1, p->linha, p->coluna);
+        printf("%d-(%d, %d)\n",i+1, p->jog.linha, p->jog.coluna);
         p = p->prox;
         i++;
     }while (p != fim);
@@ -31,26 +36,26 @@ int printa_lista(struct jogada *lista)
 }
 
 
-struct jogada *inicializa()
+struct elemento *inicializa()
 {
     return NULL;
 }
 
 
-struct jogada *Criaposicao(int linha, int coluna)
+struct elemento *Criaposicao(int linha, int coluna)
 {
-    struct jogada *novo = (struct jogada*)malloc(sizeof(struct jogada));
-    novo->linha = linha;
-    novo->coluna = coluna;
+    struct elemento *novo = (struct elemento*)malloc(sizeof(struct elemento));
+    novo->jog.linha = linha;
+    novo->jog.coluna = coluna;
     novo->prox = NULL;
     novo->ant = NULL;
     return novo;
 }
 
 
-struct jogada *insere(struct jogada *lista, struct jogada jog)
+struct elemento *insere(struct elemento *lista, struct elemento jog)
 {
-    struct jogada *novo = Criaposicao(jog.linha, jog.coluna);
+    struct elemento *novo = Criaposicao(jog.jog.linha, jog.jog.coluna);
 
     if(lista==NULL)
     {
@@ -68,30 +73,27 @@ struct jogada *insere(struct jogada *lista, struct jogada jog)
     return lista;
 }
 
-
-
 //verificar o tamanho da lista
-int tamanho(struct jogada *lista){
-  if (lista==NULL) return 0;  
-  int cont = 0;
-  struct jogada *aux = lista; 
- 
-  do{
-     cont++;
-     aux = aux->prox;
-  }while (aux!=lista); 
-  return cont;
+int tamanho(struct elemento *lista){
+    if (lista==NULL) return 0;  
+    int cont = 0;
+    struct elemento *aux = lista; 
+
+    do{
+        cont++;
+        aux = aux->prox;
+    }while (aux!=lista); 
+    return cont;
 }
 
-
 //destruindo a lista
-void destruirlista(struct jogada *lista)
+void destruirlista(struct elemento *lista)
 {
 
     int contador = 0;
     int n = tamanho(lista);   
-    struct jogada *t;
-    struct jogada *p = lista;
+    struct elemento *t;
+    struct elemento *p = lista;
     while (contador <= n)
     {
 
@@ -102,9 +104,6 @@ void destruirlista(struct jogada *lista)
     }
 
 }
-
-
-
 
 struct posicao IniciaTabuleiro()
 {
@@ -147,10 +146,10 @@ void DesenhaTabuleiro(struct posicao joga)
 
 
 
-struct jogada EscolheJogada(struct jogada *lista)
+struct elemento EscolheJogada(struct elemento *lista)
 {
-    struct jogada resp;
-    struct jogada *p=lista;
+    struct elemento resp;
+    struct elemento *p=lista;
     int n, num_lista=printa_lista(lista);
     do
     {
@@ -162,15 +161,15 @@ struct jogada EscolheJogada(struct jogada *lista)
 
     for(int i=0; i<n-1; i++)
         p=p->prox;
-    resp.linha = p->linha; resp.coluna = p->coluna;
+    resp.jog.linha = p->jog.linha; resp.jog.coluna = p->jog.coluna;
     return resp;
 }
 
 
-int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int deltaC)
+int TestaDirecao(int tab[8][8], int jogVez, struct elemento jog, int deltaL, int deltaC)
 {
-    int i=jog.linha+deltaL;
-    int j=jog.coluna+deltaC;
+    int i=jog.jog.linha+deltaL;
+    int j=jog.jog.coluna+deltaC;
     int cont=0;
 
     while (i>=0 && i<8 && j>=0 && j<8 && tab[i][j]==-jogVez){
@@ -187,10 +186,10 @@ int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int d
     return cont;
 }
 
-void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, int deltaC)
+void ViraPedrasDirecao(int tab[8][8],int jogVez, struct elemento jog, int deltaL, int deltaC)
 {
-    int i=jog.linha+deltaL;
-    int j=jog.coluna+deltaC;
+    int i=jog.jog.linha+deltaL;
+    int j=jog.jog.coluna+deltaC;
 
     while (tab[i][j]==-jogVez)
     {
@@ -201,7 +200,7 @@ void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, 
 
 }
 
-int ExecutaJogada(struct posicao *jogo, struct jogada jog){
+int ExecutaJogada(struct posicao *jogo, struct elemento jog){
     
     int jogVez = jogo->jogadorVez;
     
@@ -222,24 +221,24 @@ int ExecutaJogada(struct posicao *jogo, struct jogada jog){
     }
     if (resposta==1)
     {
-        jogo->tabuleiro[jog.linha][jog.coluna] = jogVez;
+        jogo->tabuleiro[jog.jog.linha][jog.jog.coluna] = jogVez;
     }
     return resposta;
 }
 
-struct jogada *CalculaJogadasValidas(struct posicao joga)
+struct elemento *CalculaJogadasValidas(struct posicao joga)
 {
     int jogVez = joga.jogadorVez;
 
     int aux=1, lista_vazia=1;
-    struct jogada *lista;
+    struct elemento *lista;
     lista = inicializa();
-    struct jogada jog;
+    struct elemento jog;
     for(int i=0;i<8;i++)
         for(int j=0;j<8;j++)
         {
-            jog.linha = j; jog.coluna = i;
-            if (joga.tabuleiro[jog.linha][jog.coluna]==0){
+            jog.jog.linha = j; jog.jog.coluna = i;
+            if (joga.tabuleiro[jog.jog.linha][jog.jog.coluna]==0){
                 for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
                     for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
                         if (deltaL!=0||deltaC!=0){
@@ -260,7 +259,6 @@ struct jogada *CalculaJogadasValidas(struct posicao joga)
         return NULL;
 }
 
-
 void CalculaVencedor(int tab[8][8]){
     int brancas=0;
     for (int i=0;i<8;i++){
@@ -277,13 +275,69 @@ void CalculaVencedor(int tab[8][8]){
     }else printf("Pretas vencem\n");
 }
 
+//struct elemento ExecutaIA(/*passar os parâmetros*/){
+    ///declarar e inicializar as variáveis indicadas (item 1 do exercício)
+
+    ///calcular as possíveis jogadas de acordo com o jogador da vez (item 2 e 2a do exercício)
+
+    ///a lista sendo vazia, deve ser retornado imediatamente "melhorJogada" (item 2b do exercício)
+
+    //jogadaAux = lista->prox;///começar a percorrer a lista, considerando a lista com sentinela (item 3 do exercício)
+
+    //while (jogadaAux!=lista && podado==0){///aqui vamos percorrer a lista de jogadas possíveis (ou das brancas ou das pretas) enquanto ainda for bom continuar avaliando a posiçăo
+
+        ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
+
+        ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
+
+        ///verificar se "nivel" é menor do que "MAX_NIVEL" (item 4 do exercício)
+        //if ()
+        //{
+            ///verificar se "nivel" é par (item 4a do exercício)
+            //if (){
+                ///chamar a função recursivamente e guardar a jogada retornada em "jogadaIA" (item 4a do exercício)
+            //}
+
+            ///verificar se "nivel" é ímpar (item 4b do exercício) - pode ser usado "else" em relação ao item 4a
+            //else{
+                ///chamar a função recursivamente e guardar a jogada retornada em "jogadaIA" (item 4b do exercício)
+            //}
+
+            ///executar "jogadaIA" sobre "posCopia" (item 4c do exercício)
+
+        //}
+
+        ///avaliar a posiçao "posCopia" (item 5 do exercício)
+
+        ///verificar se houve poda (item 5 do exercício)
+
+        ///verificar "jogadaIA" é a melhor jogada encontrada até o momento (item 6 do exercício)
+
+        //jogadaAux = jogadaAux->prox;
+    //}
+
+    ///liberar a memória alocada nas listas de possíveis jogadas das peças brancas ou pretas (item 7 do exercício)
+
+    ///retornar a melhor jogada encontrada "melhorJogada" (item 7 do exercício).
+//}
+
+void SalvaJogada(/*passar os parâmetros*/){
+    //FILE *arq;
+
+    ///abrir o arquivo de acordo com o valor do ponteiro
+
+    ///salvar a jogada, se for o caso
+
+    ///fechar o arquivo
+}
+
 int main(){
 
     int casasVazias = 60;
-    struct jogada jog;
+    struct elemento jog;
     struct posicao joga;
     joga = IniciaTabuleiro();
-    struct jogada *lista;
+    struct elemento *lista;
     
 
     while (casasVazias>0)
