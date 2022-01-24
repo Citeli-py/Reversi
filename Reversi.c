@@ -321,17 +321,30 @@ void CalculaVencedor(int tab[8][8]){
     ///retornar a melhor jogada encontrada "melhorJogada" (item 7 do exercício).
 //}
 
-void SalvaJogada(/*passar os parâmetros*/){
-    //FILE *arq;
+void SalvaJogada(struct elemento *jogada){
+    struct jogada jog = jogada->jog;
+    FILE *arq = fopen("jogadas.bin", "a");
 
-    ///abrir o arquivo de acordo com o valor do ponteiro
-
-    ///salvar a jogada, se for o caso
-
-    ///fechar o arquivo
+    if(jogada==NULL)
+        fclose(arq);
+    else
+        fwrite(&jog, sizeof(struct jogada), 1, arq);
+    fclose(arq);
 }
+/*
+void printa_arq()
+{
+    struct jogada jog;
+    FILE *arq = fopen("jogadas.bin", "rb");
 
+    while (fread(&jog, sizeof(struct jogada), 1, arq))
+        printf("(%d, %d) ", jog.linha, jog.coluna);
+    printf("\n");
+    fclose(arq);
+}
+*/
 int main(){
+    fopen("jogadas.bin","wb");
 
     int casasVazias = 60;
     struct elemento jog;
@@ -358,13 +371,11 @@ int main(){
             }else printf("\nJogador Pretas\n");
 
             jog = EscolheJogada(lista);
-
+            SalvaJogada(&jog);
             ExecutaJogada(&joga,jog);
             joga.jogadorVez = -joga.jogadorVez;
             casasVazias--;
-        }
-        
-
+        } 
     }
 
 
