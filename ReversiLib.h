@@ -89,20 +89,17 @@ int tamanho(struct elemento *lista){
 //destruindo a lista
 void destruirlista(struct elemento *lista)
 {
-
     int contador = 0;
     int n = tamanho(lista);   
     struct elemento *t;
     struct elemento *p = lista;
     while (contador <= n)
     {
-
         t = p->prox; 
         free(p); 
         p = t; 
         contador++;
     }
-
 }
 
 struct posicao IniciaTabuleiro()

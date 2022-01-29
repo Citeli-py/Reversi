@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
 //struct elemento ExecutaIA(/*passar os parâmetros*/){
     ///declarar e inicializar as variáveis indicadas (item 1 do exercício)
 
