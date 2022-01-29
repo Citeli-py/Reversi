@@ -2,6 +2,25 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+double AvaliaPosicao(struct posicao jogo)
+{
+    //quanto melhor estiver o jogo para as peças pretas, menor deve ser o valor retornado.
+    // A pontuação vai de -20 até 20, 10 pontos relacionados a quantidade
+    double pontos = 0;
+
+    int pecas=0; //0 -> equilibrada; pecas>0 -> brancas; pecas>0 -> pretas
+    // branco -> +1; preto -> -1
+    for(int i=0; i<8;i++)
+        for(int j=0; j<8; j++)
+            if(jogo.tabuleiro[i][j] != 0)
+            {
+                if(jogo.tabuleiro[i][j] == 1)
+                    pecas++;
+                else
+                    pecas--;
+            }
+    printf("\n|---(%d)---|\n", pecas);
+}
 
 //struct elemento ExecutaIA(/*passar os parâmetros*/){
     ///declarar e inicializar as variáveis indicadas (item 1 do exercício)
@@ -83,6 +102,7 @@ int main(){
 
     while (casasVazias>0)
     {
+        AvaliaPosicao(joga);
         DesenhaTabuleiro(joga);
         lista = inicializa();
         lista = CalculaJogadasValidas(joga);
