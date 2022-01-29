@@ -70,6 +70,7 @@ struct elemento *insere(struct elemento *lista, struct elemento jog)
         lista->ant->prox = novo;
         lista->ant = novo;
     }
+    
     return lista;
 }
 
