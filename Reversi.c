@@ -53,7 +53,6 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
 
     if(nivel % 2 == 0 )
         melhorValor = -INFINITY;
-
     else
         melhorValor = INFINITY;
 
@@ -121,7 +120,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
     }
 
     ///liberar a memória alocada nas listas de possíveis jogadas das peças brancas ou pretas (item 7 do exercício)
-    destruirlista(lista->prox);
+    Destroi_sentinela(lista);
     ///retornar a melhor jogada encontrada "melhorJogada" (item 7 do exercício).
     return melhorJogada;
 
