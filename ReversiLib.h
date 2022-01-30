@@ -18,6 +18,27 @@ struct posicao
     int jogadorVez;
 };
 
+struct elemento *Cria_sentinela()
+{
+    struct elemento *sentinela = (struct elemento*)malloc(sizeof(struct elemento));
+    sentinela->jog.linha = -200;
+    sentinela->prox = sentinela;
+    sentinela->ant = sentinela;
+    return sentinela;
+}
+
+struct elemento *Destroi_sentinela(struct elemento *lista)
+{
+    struct elemento *aux = lista;
+    lista->ant->prox = NULL;
+    while (aux != NULL)
+    {
+        lista = lista->prox;
+        free(aux);
+        aux = lista;
+    }
+    return NULL;
+}
 
 int printa_lista(struct elemento *lista)
 {
