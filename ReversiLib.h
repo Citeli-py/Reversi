@@ -21,7 +21,7 @@ struct posicao
 struct elemento *Cria_sentinela()
 {
     struct elemento *sentinela = (struct elemento*)malloc(sizeof(struct elemento));
-    sentinela->jog.linha = -200;
+    sentinela->jog.linha = -2; //Debug
     sentinela->prox = sentinela;
     sentinela->ant = sentinela;
     return sentinela;

@@ -50,7 +50,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
     struct elemento *lista;
     struct elemento *jogadaAux;
     melhorJogada.linha = -1; melhorJogada.coluna = -1;
-
+    //printf("1\n");
     if(nivel % 2 == 0 )
         melhorValor = -INFINITY;
     else
@@ -58,22 +58,23 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
 
     ///calcular as possíveis jogadas de acordo com o jogador da vez (item 2 e 2a do exercício);
     lista = Altera_lista(CalculaJogadasValidas(posAtual));
+    //printf("2\n");
     //printa_lista(lista);
     ///a lista sendo vazia, deve ser retornado imediatamente "melhorJogada" (item 2b do exercício);
     if(CalculaJogadasValidas(posAtual) == NULL)
         return melhorJogada;
+    //printf("3\n");
 
     jogadaAux = lista->prox;///começar a percorrer a lista, considerando a lista com sentinela (item 3 do exercício)
     struct posicao posCopia;
-
     while (jogadaAux!=lista && podado == 0)
     {
         ///aqui vamos percorrer a lista de jogadas possíveis (ou das brancas ou das pretas) enquanto ainda for bom continuar avaliando a posiçăo
         ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
         posCopia = posAtual;
-        printf("(%d, %d)\n", jogadaAux->jog.linha, jogadaAux->jog.coluna);
         ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
         ExecutaJogada(&posCopia, *jogadaAux);
+        
         ///verificar se "nivel" é menor do que "MAX_NIVEL" (item 4 do exercício)
         if (nivel<MAX_NIVEL)
         {
@@ -91,15 +92,20 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
             }
 
             ///executar "jogadaIA" sobre "posCopia" (item 4c do exercício)
-            struct elemento a;
-            a.jog = jogadaIA;
-            if(jogadaIA.linha>-1)
+            if(jogadaIA.linha != -1)
+            {
+                //printf("(%d, %d)\n", jogadaIA.linha, jogadaIA.coluna);
+                struct elemento a;
+                a.jog = jogadaIA;
                 ExecutaJogada(&posCopia, a);
+            }
         }
 
         ///avaliar a posiçao "posCopia" (item 5 do exercício)
         ///verificar se houve poda (item 5 do exercício);
+        //printf("1\n");
         valorJogada = AvaliaPosicao(posCopia);
+        //printf("|--(%d), (%d), (%d)--|\n", valorJogada, alfa, beta);
         if(valorJogada < alfa || valorJogada > beta)
             podado = 1;
 
@@ -107,23 +113,20 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         if(nivel % 2 == 0 && valorJogada>= melhorValor)
         { 
             melhorValor = valorJogada;
-            melhorJogada = jogadaAux->jog;
+            melhorJogada = jogadaIA;
         }
 
         if(nivel % 2 != 0 && valorJogada <= melhorValor)
         {
             melhorValor = valorJogada;
-            melhorJogada = jogadaAux->jog;
+            melhorJogada = jogadaIA;
         }
-
         jogadaAux = jogadaAux->prox;
     }
-
     ///liberar a memória alocada nas listas de possíveis jogadas das peças brancas ou pretas (item 7 do exercício)
-    Destroi_sentinela(lista);
+    //Destroi_sentinela(lista);
     ///retornar a melhor jogada encontrada "melhorJogada" (item 7 do exercício).
     return melhorJogada;
-
 }
 
 void SalvaJogada(struct elemento *jogada){
