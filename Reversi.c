@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #define INFINITY 10000
-#define MAX_NIVEL 0
+#define MAX_NIVEL 4
 
 double AvaliaPosicao(struct posicao jogo)
 {
@@ -64,10 +64,10 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
     double melhorValor, valorJogada;
     int podado = 0;
     struct jogada melhorJogada; 
-    struct elemento jogadaIA;
+    struct jogada jogadaIA;
     melhorJogada.linha = -1; melhorJogada.coluna = -1;
     struct elemento *lista = inicializa();
-    struct elemento *jogadaAux;
+    struct jogada *jogadaAux;
 
     if(nivel % 2 == 0 )
         melhorValor = -INFINITY;
@@ -77,8 +77,8 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
 
     ///calcular as possíveis jogadas de acordo com o jogador da vez (item 2 e 2a do exercício);
     struct elemento sentinela;
-    sentinela.jog.linha = -1;
-    lista = insere(lista, sentinela);
+    //sentinela.jog.linha = -1;
+    //lista = insere(lista, sentinela);
     lista = CalculaJogadasValidas(posAtual);
     
     //printa_lista2(lista);
