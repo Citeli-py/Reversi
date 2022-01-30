@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #define INFINITY 10000
-#define MAX_NIVEL 4
+#define MAX_NIVEL 3
 
 double AvaliaPosicao(struct posicao jogo)
 {
@@ -108,13 +108,13 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         if(nivel % 2 == 0 && valorJogada>= melhorValor)
         { 
             melhorValor = valorJogada;
-            melhorJogada = jogadaIA;
+            melhorJogada = jogadaAux->jog;
         }
 
         if(nivel % 2 != 0 && valorJogada <= melhorValor)
         {
             melhorValor = valorJogada;
-            melhorJogada = jogadaIA;
+            melhorJogada = jogadaAux->jog;
         }
 
         jogadaAux = jogadaAux->prox;
@@ -192,9 +192,7 @@ int main()
         } 
     }
 
-
     system("cls");
-    system("pause");
     DesenhaTabuleiro(joga);
     CalculaVencedor(joga.tabuleiro);
     destruirlista(lista);
