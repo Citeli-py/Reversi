@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #define INFINITY 10000
-#define MAX_NIVEL 3
+#define MAX_NIVEL 4
 
 double AvaliaPosicao(struct posicao jogo)
 {
@@ -25,7 +25,7 @@ double AvaliaPosicao(struct posicao jogo)
         
     pontos = ((brancas/(brancas+pretas)) * 40.0)-20;
 
-    printf("\n|----------(%.2lf)----------|\n", pontos);
+    //printf("\n|----------(%.2lf)----------|\n", pontos);
     return pontos;
 }
 
@@ -46,8 +46,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
     ///declarar e inicializar as variáveis indicadas (item 1 do exercício);
     double melhorValor, valorJogada;
     int podado = 0;
-    struct jogada melhorJogada;
-    struct elemento jogadaIA; 
+    struct jogada melhorJogada, jogadaIA;
     struct elemento *lista;
     struct elemento *jogadaAux;
     melhorJogada.linha = -1; melhorJogada.coluna = -1;
@@ -60,7 +59,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
 
     ///calcular as possíveis jogadas de acordo com o jogador da vez (item 2 e 2a do exercício);
     lista = Altera_lista(CalculaJogadasValidas(posAtual));
-    printa_lista(lista);
+    //printa_lista(lista);
     ///a lista sendo vazia, deve ser retornado imediatamente "melhorJogada" (item 2b do exercício);
     if(CalculaJogadasValidas(posAtual) == NULL)
         return melhorJogada;
@@ -73,6 +72,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         ///aqui vamos percorrer a lista de jogadas possíveis (ou das brancas ou das pretas) enquanto ainda for bom continuar avaliando a posiçăo
         ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
         posCopia = posAtual;
+        printf("(%d, %d)\n", jogadaAux->jog.linha, jogadaAux->jog.coluna);
         ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
         ExecutaJogada(&posCopia, *jogadaAux);
         ///verificar se "nivel" é menor do que "MAX_NIVEL" (item 4 do exercício)
@@ -82,18 +82,20 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
             if (nivel % 2 == 0)
             {
                 ///chamar a função recursivamente e guardar a jogada retornada em "jogadaIA" (item 4a do exercício)
-                jogadaIA.jog = ExecutaIA(posCopia, nivel+1, melhorValor, beta);
+                jogadaIA = ExecutaIA(posCopia, nivel+1, melhorValor, beta);
             }
             ///verificar se "nivel" é ímpar (item 4b do exercício) - pode ser usado "else" em relação ao item 4a
             else
             {
                 ///chamar a função recursivamente e guardar a jogada retornada em "jogadaIA" (item 4b do exercício)
-                jogadaIA.jog = ExecutaIA(posCopia, nivel+1, alfa, melhorValor);
+                jogadaIA = ExecutaIA(posCopia, nivel+1, alfa, melhorValor);
             }
 
             ///executar "jogadaIA" sobre "posCopia" (item 4c do exercício)
-            if(jogadaIA.jog.linha>-1)
-                ExecutaJogada(&posCopia, jogadaIA);
+            struct elemento a;
+            a.jog = jogadaIA;
+            if(jogadaIA.linha>-1)
+                ExecutaJogada(&posCopia, a);
         }
 
         ///avaliar a posiçao "posCopia" (item 5 do exercício)
@@ -106,13 +108,13 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         if(nivel % 2 == 0 && valorJogada>= melhorValor)
         { 
             melhorValor = valorJogada;
-            melhorJogada = jogadaAux->jog;
+            melhorJogada = jogadaIA;
         }
 
         if(nivel % 2 != 0 && valorJogada <= melhorValor)
         {
             melhorValor = valorJogada;
-            melhorJogada = jogadaAux->jog;
+            melhorJogada = jogadaIA;
         }
 
         jogadaAux = jogadaAux->prox;
