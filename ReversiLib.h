@@ -26,8 +26,8 @@ struct elemento *Cria_sentinela()
     sentinela->ant = sentinela;
     return sentinela;
 }
-
-struct elemento *Destroi_sentinela(struct elemento *lista)
+//destruindo a lista
+struct elemento *destruirlista(struct elemento *lista)
 {
     struct elemento *aux = lista;
     lista->ant->prox = NULL;
@@ -42,26 +42,18 @@ struct elemento *Destroi_sentinela(struct elemento *lista)
 
 int printa_lista(struct elemento *lista)
 {
-    struct elemento *p = lista;
-    struct elemento *fim = lista;
+    struct elemento *p = lista->prox;
     int i=0;
-    //printf("\n");
+
     do
     {
         printf("%d-(%d, %d)\n",i+1, p->jog.linha, p->jog.coluna);
         p = p->prox;
         i++;
-    }while (p != fim);
+    }while (p != lista);
     printf("\n");
     return i;
 }
-
-
-struct elemento *inicializa()
-{
-    return NULL;
-}
-
 
 struct elemento *Criaposicao(int linha, int coluna)
 {
@@ -73,55 +65,16 @@ struct elemento *Criaposicao(int linha, int coluna)
     return novo;
 }
 
-
 struct elemento *insere(struct elemento *lista, struct elemento jog)
 {
     struct elemento *novo = Criaposicao(jog.jog.linha, jog.jog.coluna);
 
-    if(lista==NULL)
-    {
-        novo->prox = novo;
-        novo->ant = novo;
-        lista = novo;
-    }
-    else
-    {
-        novo->prox = lista;
-        novo->ant = lista->ant;
-        lista->ant->prox = novo;
-        lista->ant = novo;
-    }
+    novo->prox = lista;
+    novo->ant = lista->ant;
+    lista->ant->prox = novo;
+    lista->ant = novo;
     
     return lista;
-}
-
-//verificar o tamanho da lista
-int tamanho(struct elemento *lista){
-    if (lista==NULL) return 0;  
-    int cont = 0;
-    struct elemento *aux = lista; 
-
-    do{
-        cont++;
-        aux = aux->prox;
-    }while (aux!=lista); 
-    return cont;
-}
-
-//destruindo a lista
-void destruirlista(struct elemento *lista)
-{
-    int contador = 0;
-    int n = tamanho(lista);   
-    struct elemento *t;
-    struct elemento *p = lista;
-    while (contador <= n)
-    {
-        t = p->prox; 
-        free(p); 
-        p = t; 
-        contador++;
-    }
 }
 
 struct posicao IniciaTabuleiro()
@@ -173,7 +126,7 @@ struct elemento EscolheJogada(struct elemento *lista)
         if(n<1||n>num_lista)
             printf("jogada invalida!\n");
     }while(n<1||n>num_lista);
-
+    p = p->prox;
     for(int i=0; i<n-1; i++)
         p=p->prox;
     resp.jog.linha = p->jog.linha; resp.jog.coluna = p->jog.coluna;
@@ -247,7 +200,7 @@ struct elemento *CalculaJogadasValidas(struct posicao joga)
 
     int aux=1, lista_vazia=1;
     struct elemento *lista;
-    lista = inicializa();
+    lista = Cria_sentinela();
     struct elemento jog;
     for(int i=0;i<8;i++)
         for(int j=0;j<8;j++)

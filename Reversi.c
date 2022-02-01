@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define INFINITY 100
-#define MAX_NIVEL 3
+#define INFINITY 1000
+#define MAX_NIVEL 5
 
 double AvaliaPosicao(struct posicao jogo)
 {
@@ -29,18 +29,6 @@ double AvaliaPosicao(struct posicao jogo)
     return pontos;
 }
 
-struct elemento *Altera_lista(struct elemento *l) // Transforma a lista sem sentinela numa com.
-{
-    struct elemento *lista = Cria_sentinela();
-    struct elemento *aux = l;
-    do
-    {
-        lista = insere(lista, *aux);
-        aux = aux->prox;
-    }while (aux != l);
-    return lista;
-}
-
 struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double beta)
 {
     ///declarar e inicializar as variáveis indicadas (item 1 do exercício);
@@ -57,11 +45,11 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         melhorValor = INFINITY;
 
     ///calcular as possíveis jogadas de acordo com o jogador da vez (item 2 e 2a do exercício);
-    lista = Altera_lista(CalculaJogadasValidas(posAtual));
+    lista = CalculaJogadasValidas(posAtual);
     //printf("2\n");
     //printa_lista(lista);
     ///a lista sendo vazia, deve ser retornado imediatamente "melhorJogada" (item 2b do exercício);
-    if(CalculaJogadasValidas(posAtual) == NULL)
+    if(lista == lista->prox)
         return melhorJogada;
     //printf("3\n");
 
@@ -72,6 +60,8 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         ///aqui vamos percorrer a lista de jogadas possíveis (ou das brancas ou das pretas) enquanto ainda for bom continuar avaliando a posiçăo
         ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
         posCopia = posAtual;
+        printf("nivel: %d\n", nivel);
+        DesenhaTabuleiro(posCopia);
         ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
         ExecutaJogada(&posCopia, jogadaAux->jog);
         
@@ -122,7 +112,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         jogadaAux = jogadaAux->prox;
     }
     ///liberar a memória alocada nas listas de possíveis jogadas das peças brancas ou pretas (item 7 do exercício)
-    Destroi_sentinela(lista);
+    destruirlista(lista);
     ///retornar a melhor jogada encontrada "melhorJogada" (item 7 do exercício).
     return melhorJogada;
 }
@@ -163,7 +153,7 @@ int main()
     while (casasVazias>0)
     {
         DesenhaTabuleiro(joga);
-        lista = inicializa();
+        lista = Cria_sentinela();
         lista = CalculaJogadasValidas(joga);
 
         if(lista == NULL)
