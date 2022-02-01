@@ -181,10 +181,10 @@ struct elemento EscolheJogada(struct elemento *lista)
 }
 
 
-int TestaDirecao(int tab[8][8], int jogVez, struct elemento jog, int deltaL, int deltaC)
+int TestaDirecao(int tab[8][8], int jogVez, struct jogada jog, int deltaL, int deltaC)
 {
-    int i=jog.jog.linha+deltaL;
-    int j=jog.jog.coluna+deltaC;
+    int i=jog.linha+deltaL;
+    int j=jog.coluna+deltaC;
     int cont=0;
 
     while (i>=0 && i<8 && j>=0 && j<8 && tab[i][j]==-jogVez){
@@ -201,10 +201,10 @@ int TestaDirecao(int tab[8][8], int jogVez, struct elemento jog, int deltaL, int
     return cont;
 }
 
-void ViraPedrasDirecao(int tab[8][8],int jogVez, struct elemento jog, int deltaL, int deltaC)
+void ViraPedrasDirecao(int tab[8][8],int jogVez, struct jogada jog, int deltaL, int deltaC)
 {
-    int i=jog.jog.linha+deltaL;
-    int j=jog.jog.coluna+deltaC;
+    int i=jog.linha+deltaL;
+    int j=jog.coluna+deltaC;
 
     while (tab[i][j]==-jogVez)
     {
@@ -215,7 +215,7 @@ void ViraPedrasDirecao(int tab[8][8],int jogVez, struct elemento jog, int deltaL
 
 }
 
-int ExecutaJogada(struct posicao *jogo, struct elemento jog){
+int ExecutaJogada(struct posicao *jogo, struct jogada jog){
     
     int jogVez = jogo->jogadorVez;
     
@@ -236,7 +236,7 @@ int ExecutaJogada(struct posicao *jogo, struct elemento jog){
     }
     if (resposta==1)
     {
-        jogo->tabuleiro[jog.jog.linha][jog.jog.coluna] = jogVez;
+        jogo->tabuleiro[jog.linha][jog.coluna] = jogVez;
     }
     return resposta;
 }
@@ -257,7 +257,7 @@ struct elemento *CalculaJogadasValidas(struct posicao joga)
                 for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
                     for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
                         if (deltaL!=0||deltaC!=0){
-                            if (TestaDirecao(joga.tabuleiro,jogVez,jog,deltaL,deltaC)){
+                            if (TestaDirecao(joga.tabuleiro,jogVez,jog.jog,deltaL,deltaC)){
                                 lista = insere(lista, jog);
                                 aux=0;
                                 lista_vazia = 0;

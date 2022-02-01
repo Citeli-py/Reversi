@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define INFINITY 10000
+#define INFINITY 100
 #define MAX_NIVEL 3
 
 double AvaliaPosicao(struct posicao jogo)
@@ -12,7 +12,6 @@ double AvaliaPosicao(struct posicao jogo)
     double pontos = 0;
     // branco -> +1; preto -> -1
     double brancas = 0,  pretas = 0;
-
     for(int i=0; i<8;i++)  
         for(int j=0; j<8; j++)
             if(jogo.tabuleiro[i][j] != 0)
@@ -24,6 +23,7 @@ double AvaliaPosicao(struct posicao jogo)
             }
         
     pontos = ((brancas/(brancas+pretas)) * 40.0)-20;
+    //pontos = brancas - pretas;
 
     //printf("\n|----------(%.2lf)----------|\n", pontos);
     return pontos;
@@ -73,7 +73,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
         posCopia = posAtual;
         ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
-        ExecutaJogada(&posCopia, *jogadaAux);
+        ExecutaJogada(&posCopia, jogadaAux->jog);
         
         ///verificar se "nivel" é menor do que "MAX_NIVEL" (item 4 do exercício)
         if (nivel<MAX_NIVEL)
@@ -95,9 +95,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
             if(jogadaIA.linha != -1)
             {
                 //printf("(%d, %d)\n", jogadaIA.linha, jogadaIA.coluna);
-                struct elemento a;
-                a.jog = jogadaIA;
-                ExecutaJogada(&posCopia, a);
+                ExecutaJogada(&posCopia, jogadaIA);
             }
         }
 
@@ -105,7 +103,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         ///verificar se houve poda (item 5 do exercício);
         //printf("1\n");
         valorJogada = AvaliaPosicao(posCopia);
-        //printf("|--(%d), (%d), (%d)--|\n", valorJogada, alfa, beta);
+        //printf("|--(%lf), (%lf), (%lf)--|\n", valorJogada, alfa, beta);
         if(valorJogada < alfa || valorJogada > beta)
             podado = 1;
 
@@ -119,12 +117,12 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         if(nivel % 2 != 0 && valorJogada <= melhorValor)
         {
             melhorValor = valorJogada;
-            melhorJogada = jogadaIA;
+            melhorJogada = jogadaAux->jog;
         }
         jogadaAux = jogadaAux->prox;
     }
     ///liberar a memória alocada nas listas de possíveis jogadas das peças brancas ou pretas (item 7 do exercício)
-    //Destroi_sentinela(lista);
+    Destroi_sentinela(lista);
     ///retornar a melhor jogada encontrada "melhorJogada" (item 7 do exercício).
     return melhorJogada;
 }
@@ -186,9 +184,8 @@ int main()
                 printf("\nJogador Pretas\n");
                 jog = EscolheJogada(lista);
             }
-
             SalvaJogada(&jog);
-            ExecutaJogada(&joga,jog);
+            ExecutaJogada(&joga,jog.jog);
             joga.jogadorVez = -joga.jogadorVez;
             casasVazias--;
         } 
