@@ -60,14 +60,18 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         ///aqui vamos percorrer a lista de jogadas possíveis (ou das brancas ou das pretas) enquanto ainda for bom continuar avaliando a posiçăo
         ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
         posCopia = posAtual;
-        printf("nivel: %d\n", nivel);
-        DesenhaTabuleiro(posCopia);
+        //printf("nivel: %d\n", nivel);
+        //DesenhaTabuleiro(posCopia);
         ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
         ExecutaJogada(&posCopia, jogadaAux->jog);
         
         ///verificar se "nivel" é menor do que "MAX_NIVEL" (item 4 do exercício)
         if (nivel<MAX_NIVEL)
         {
+            if(nivel%2==0) // Ideia matheus
+                posCopia.jogadorVez = 1;
+            else
+                posCopia.jogadorVez = -1;
             ///verificar se "nivel" é par (item 4a do exercício)
             if (nivel % 2 == 0)
             {
