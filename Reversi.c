@@ -48,7 +48,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
     ///calcular as possíveis jogadas de acordo com o jogador da vez (item 2 e 2a do exercício);
     lista = CalculaJogadasValidas(posAtual);
     //printf("2\n");
-    //printa_lista(lista);
+    printa_lista(lista);
     ///a lista sendo vazia, deve ser retornado imediatamente "melhorJogada" (item 2b do exercício);
     if(lista == lista->prox)
         return melhorJogada;
