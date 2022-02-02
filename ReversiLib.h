@@ -57,6 +57,9 @@ int printa_lista(struct elemento *lista)
 
 int tamanho(struct elemento *lista)
 {
+    if(lista == NULL)
+        return 0;
+
     int i=0;
     for(struct elemento *p = lista->prox; p != lista; p = p->prox)
         i++;
@@ -126,6 +129,14 @@ struct elemento EscolheJogada(struct elemento *lista)
 {
     struct elemento resp;
     struct elemento *p=lista;
+  
+    if(lista == NULL)
+    {
+        resp.jog.coluna = -1;
+        resp.jog.linha = -1;
+        return resp;
+    }
+
     int n, num_lista=printa_lista(lista);
     do
     {
@@ -199,6 +210,9 @@ int ExecutaJogada(struct posicao *jogo, struct jogada jog){
     {
         jogo->tabuleiro[jog.linha][jog.coluna] = jogVez;
     }
+
+    jogo->jogadorVez = -jogo->jogadorVez;
+
     return resposta;
 }
 
@@ -215,8 +229,8 @@ struct elemento *CalculaJogadasValidas(struct posicao joga)
         {
             jog.jog.linha = j; jog.jog.coluna = i;
             if (joga.tabuleiro[jog.jog.linha][jog.jog.coluna]==0){
-                for (int deltaL=-1;deltaL<=1&&aux;deltaL++){
-                    for (int deltaC=-1;deltaC<=1&&aux;deltaC++){
+                for (int deltaL=-1;deltaL<=1;deltaL++){
+                    for (int deltaC=-1;deltaC<=1;deltaC++){
                         if (deltaL!=0||deltaC!=0){
                             if (TestaDirecao(joga.tabuleiro,jogVez,jog.jog,deltaL,deltaC)){
                                 lista = insere(lista, jog);
@@ -232,7 +246,11 @@ struct elemento *CalculaJogadasValidas(struct posicao joga)
     if(lista_vazia==0)
         return lista;
     else
+    {
+        destruirlista(lista);
         return NULL;
+    }
+
 }
 
 void CalculaVencedor(int tab[8][8]){
