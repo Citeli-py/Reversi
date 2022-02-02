@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #define INFINITY 1000
-#define MAX_NIVEL 5
+#define MAX_NIVEL 2
 
 double AvaliaPosicao(struct posicao jogo)
 {
@@ -22,7 +22,8 @@ double AvaliaPosicao(struct posicao jogo)
                     pretas++;
             }
         
-    pontos = ((brancas/(brancas+pretas)) * 40.0)-20;
+    pontos = ((brancas/(brancas+pretas)) * 20.0)-10.0;
+    pontos += tamanho(CalculaJogadasValidas(jogo));
     //pontos = brancas - pretas;
 
     //printf("\n|----------(%.2lf)----------|\n", pontos);
@@ -61,17 +62,19 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
         posCopia = posAtual;
         //printf("nivel: %d\n", nivel);
+        if(nivel%2==0) // Ideia matheus
+            posCopia.jogadorVez = 1;
+        else
+            posCopia.jogadorVez = -1;
+
+        //printf("Jogada: %d %d\n", jogadaAux->jog.linha,jogadaAux->jog.coluna);
         //DesenhaTabuleiro(posCopia);
         ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
         ExecutaJogada(&posCopia, jogadaAux->jog);
-        
+    
         ///verificar se "nivel" é menor do que "MAX_NIVEL" (item 4 do exercício)
         if (nivel<MAX_NIVEL)
         {
-            if(nivel%2==0) // Ideia matheus
-                posCopia.jogadorVez = 1;
-            else
-                posCopia.jogadorVez = -1;
             ///verificar se "nivel" é par (item 4a do exercício)
             if (nivel % 2 == 0)
             {
@@ -111,7 +114,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         if(nivel % 2 != 0 && valorJogada <= melhorValor)
         {
             melhorValor = valorJogada;
-            melhorJogada = jogadaAux->jog;
+            melhorJogada = jogadaIA;
         }
         jogadaAux = jogadaAux->prox;
     }
@@ -171,7 +174,6 @@ int main()
             {
                 printf("\nJogador Brancas\n");
                 jog.jog = ExecutaIA(joga, 0, 0, 0);
-                printf("Jogada:%d %d\n", jog.jog.linha,jog.jog.coluna);
             }
             else 
             {
@@ -179,6 +181,7 @@ int main()
                 jog = EscolheJogada(lista);
             }
             SalvaJogada(&jog);
+            printf("Jogada: %d %d\n", jog.jog.linha,jog.jog.coluna);
             ExecutaJogada(&joga,jog.jog);
             joga.jogadorVez = -joga.jogadorVez;
             casasVazias--;

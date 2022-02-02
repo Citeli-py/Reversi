@@ -55,6 +55,14 @@ int printa_lista(struct elemento *lista)
     return i;
 }
 
+int tamanho(struct elemento *lista)
+{
+    int i=0;
+    for(struct elemento *p = lista->prox; p != lista; p = p->prox)
+        i++;
+    return i;
+}
+
 struct elemento *Criaposicao(int linha, int coluna)
 {
     struct elemento *novo = (struct elemento*)malloc(sizeof(struct elemento));
