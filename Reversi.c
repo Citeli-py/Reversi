@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define INFINITY 1000
-#define MAX_NIVEL 2
+#define INFINITY 10000
+#define MAX_NIVEL 5
 
 double AvaliaPosicao(struct posicao jogo)
 {
@@ -21,12 +21,14 @@ double AvaliaPosicao(struct posicao jogo)
                 else
                     pretas++;
             }
-    
-    pontos = ((brancas/(brancas+pretas)) * 20.0)-10.0;
-    pontos += tamanho(CalculaJogadasValidas(jogo));
-    //pontos = brancas - pretas;
 
-    //printf("\n|----------(%.2lf)----------|\n", pontos);
+    pontos = ((brancas/(brancas+pretas)) * 20.0)-10.0;
+    struct elemento *aux;
+    aux = CalculaJogadasValidas(jogo);
+    if(aux == NULL)
+        return pontos;
+    pontos += jogo.jogadorVez*tamanho(aux);
+    destruirlista(aux);
     return pontos;
 }
 
@@ -39,7 +41,7 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
     struct elemento *lista;
     struct elemento *jogadaAux;
     melhorJogada.linha = -1; melhorJogada.coluna = -1;
-    //printf("1\n");
+
     if(nivel % 2 == 0 )
         melhorValor = -INFINITY;
     else
@@ -47,14 +49,11 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
 
     ///calcular as possíveis jogadas de acordo com o jogador da vez (item 2 e 2a do exercício);
     lista = CalculaJogadasValidas(posAtual);
-    printf("2\n");
-  //  printa_lista(lista);
+
     ///a lista sendo vazia, deve ser retornado imediatamente "melhorJogada" (item 2b do exercício);
-    
     if(lista == NULL)
         return melhorJogada;
     
-    printf("3\n");
     jogadaAux = lista->prox;///começar a percorrer a lista, considerando a lista com sentinela (item 3 do exercício)
     struct posicao posCopia;
     while (jogadaAux!=lista && podado == 0)
@@ -62,19 +61,9 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
         ///aqui vamos percorrer a lista de jogadas possíveis (ou das brancas ou das pretas) enquanto ainda for bom continuar avaliando a posiçăo
         ///copiar o parâmetro "posAtual" para "posCopia" (item 3 do exercício)
         posCopia = posAtual;
-        //printf("nivel: %d\n", nivel);
-       /* if(nivel%2==0) // Ideia matheus
-            posCopia.jogadorVez = 1;
-        else
-            posCopia.jogadorVez = -1;*/
-
-        //printf("Jogada: %d %d\n", jogadaAux->jog.linha,jogadaAux->jog.coluna);
-        //DesenhaTabuleiro(posCopia);
         ///executar a jogada "jogadaAux" em "posCopia" (item 3 do exercício)
         ExecutaJogada(&posCopia, jogadaAux->jog);
-       
-        printf("Teste2 %d\n", nivel);
-    
+
         ///verificar se "nivel" é menor do que "MAX_NIVEL" (item 4 do exercício)
         if (nivel<MAX_NIVEL)
         {
@@ -82,32 +71,24 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
             if (nivel % 2 == 0)
             {
                 ///chamar a função recursivamente e guardar a jogada retornada em "jogadaIA" (item 4a do exercício)
-                printf("aaa\n");
                 jogadaIA = ExecutaIA(posCopia, nivel+1, melhorValor, beta);
             }
             ///verificar se "nivel" é ímpar (item 4b do exercício) - pode ser usado "else" em relação ao item 4a
             else
             {
                 ///chamar a função recursivamente e guardar a jogada retornada em "jogadaIA" (item 4b do exercício)
-                printf("bbb\n");
                 jogadaIA = ExecutaIA(posCopia, nivel+1, alfa, melhorValor);
             }
 
             ///executar "jogadaIA" sobre "posCopia" (item 4c do exercício)
             if(jogadaIA.linha != -1)
-            {
-                //printf("(%d, %d)\n", jogadaIA.linha, jogadaIA.coluna);
                 ExecutaJogada(&posCopia, jogadaIA);
-                printf("Teste3\n");
-            }
         }
 
         ///avaliar a posiçao "posCopia" (item 5 do exercício)
         ///verificar se houve poda (item 5 do exercício);
-        printf("1\n");
         valorJogada = AvaliaPosicao(posCopia);
-        printf("Teste4\n");
-        //printf("|--(%lf), (%lf), (%lf)--|\n", valorJogada, alfa, beta);
+
         if(valorJogada < alfa || valorJogada > beta)
             podado = 1;
 
@@ -123,14 +104,12 @@ struct jogada ExecutaIA(struct posicao posAtual, int nivel, double alfa, double 
             melhorValor = valorJogada;
             melhorJogada = jogadaAux->jog;
         }
-        printf("Teste5\n");
-        jogadaAux = jogadaAux->prox;
-        printf("Teste6\n");
 
+        jogadaAux = jogadaAux->prox;
     }
     ///liberar a memória alocada nas listas de possíveis jogadas das peças brancas ou pretas (item 7 do exercício)
     destruirlista(lista);
-    printf("Teste7\n");
+
     ///retornar a melhor jogada encontrada "melhorJogada" (item 7 do exercício).
     return melhorJogada;
 }
@@ -145,18 +124,7 @@ void SalvaJogada(struct elemento *jogada){
         fwrite(&jog, sizeof(struct jogada), 1, arq);
     fclose(arq);
 }
-/*
-void printa_arq()
-{
-    struct jogada jog;
-    FILE *arq = fopen("jogadas.bin", "rb");
 
-    while (fread(&jog, sizeof(struct jogada), 1, arq))
-        printf("(%d, %d) ", jog.linha, jog.coluna);
-    printf("\n");
-    fclose(arq);
-}
-*/
 int main()
 {
     fopen("jogadas.bin","wb");
@@ -176,27 +144,25 @@ int main()
             {
                 printf("\nJogador Brancas\n");
                 jog.jog = ExecutaIA(joga, 0, INFINITY, -INFINITY);
-                printf("Teste\n");
             }
             else 
             {
                 lista = CalculaJogadasValidas(joga);
                 printf("\nJogador Pretas\n");
                 jog = EscolheJogada(lista);
-        
             }
             if(jog.jog.coluna != -1)
             {
                 SalvaJogada(&jog);
-                printf("Jogada: %d %d\n", jog.jog.linha,jog.jog.coluna);
                 ExecutaJogada(&joga,jog.jog);
                 casasVazias--;
             }
             else
             {
+                if(joga.jogadorVez == -1)
+                    printf("Sem jogadas possiveis! Perdeu a vez\n");
                 joga.jogadorVez = -joga.jogadorVez;
             }
-
     }
 
     system("cls");

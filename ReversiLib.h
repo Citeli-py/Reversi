@@ -21,7 +21,6 @@ struct posicao
 struct elemento *Cria_sentinela()
 {
     struct elemento *sentinela = (struct elemento*)malloc(sizeof(struct elemento));
-    sentinela->jog.linha = -2; //Debug
     sentinela->prox = sentinela;
     sentinela->ant = sentinela;
     return sentinela;
@@ -220,7 +219,7 @@ struct elemento *CalculaJogadasValidas(struct posicao joga)
 {
     int jogVez = joga.jogadorVez;
 
-    int aux=1, lista_vazia=1;
+    int lista_vazia=1;
     struct elemento *lista;
     lista = Cria_sentinela();
     struct elemento jog;
@@ -234,14 +233,12 @@ struct elemento *CalculaJogadasValidas(struct posicao joga)
                         if (deltaL!=0||deltaC!=0){
                             if (TestaDirecao(joga.tabuleiro,jogVez,jog.jog,deltaL,deltaC)){
                                 lista = insere(lista, jog);
-                                aux=0;
                                 lista_vazia = 0;
                             }
                         }
                     }
                 }
             }
-            aux=1;
         }
     if(lista_vazia==0)
         return lista;
